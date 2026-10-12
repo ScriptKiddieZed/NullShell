@@ -21,7 +21,6 @@ NullShell runs a full Kali Linux userspace through [PRoot](https://proot-me.gith
 ### In-app browser
 - Tabbed WebView browser with history, and app-private CA-certificate trust so you can point it at your own intercepting proxy (mitmproxy, Caido, Burp, etc.) without touching the system trust store.
 - A desktop-style developer tools panel: Elements, Console, Network, Sources, Application, Security, Performance and a Device (user-agent/viewport) emulation panel, with a code-wrap toggle in the Elements/Sources views.
-- Full-screen video and "open in app" external links work as expected.
 
 ### Custom commands (snippets)
 - Save frequently used shell commands as reusable, named snippets with a one-tap run dialog.
