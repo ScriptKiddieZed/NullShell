@@ -1,0 +1,31 @@
+# Gradle
+.gradle/
+build/
+app/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Local Gradle/Android SDK config (machine-specific, never commit)
+local.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+.navigation/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# CodeAssist
+.ca/
+
+# Native PRoot runtime (prebuilt Termux binaries, generated on-device, not redistributed)
+app/src/main/jniLibs/
+
+# Keystores - never commit signing keys
+*.jks
+*.keystore
+
+# Logs / OS files
+*.log
+.DS_Store
+Thumbs.db

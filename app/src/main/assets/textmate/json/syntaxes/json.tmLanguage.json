@@ -1,0 +1,59 @@
+{
+  "name": "JSON",
+  "scopeName": "source.json",
+  "patterns": [
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#key"
+    },
+    {
+      "include": "#string"
+    },
+    {
+      "include": "#const"
+    },
+    {
+      "include": "#number"
+    },
+    {
+      "include": "#punct"
+    }
+  ],
+  "repository": {
+    "comment": {
+      "patterns": [
+        {
+          "match": "//.*$",
+          "name": "comment.line.double-slash.json"
+        },
+        {
+          "begin": "/\\*",
+          "end": "\\*/",
+          "name": "comment.block.json"
+        }
+      ]
+    },
+    "key": {
+      "match": "\"(?:[^\"\\\\]|\\\\.)*\"(?=\\s*:)",
+      "name": "support.type.property-name.json"
+    },
+    "string": {
+      "match": "\"(?:[^\"\\\\]|\\\\.)*\"",
+      "name": "string.quoted.double.json"
+    },
+    "const": {
+      "match": "\\b(?:true|false|null)\\b",
+      "name": "constant.language.json"
+    },
+    "number": {
+      "match": "-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?",
+      "name": "constant.numeric.json"
+    },
+    "punct": {
+      "match": "[\\[\\]{},:]",
+      "name": "punctuation.separator.json"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+<resources>
+    <style name="AppTheme" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:colorControlActivated">@color/accent</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:navigationBarColor">@color/bg</item>
+        <item name="android:statusBarColor">@color/bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:alertDialogTheme">@style/AppDialog</item>
+    </style>
+    <style name="AppDialog" parent="android:style/Theme.Material.Dialog.Alert">
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:windowBackground">@drawable/dialog_bg</item>
+    </style>
+    <style name="AppThemeLight" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:colorControlActivated">@color/accent</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:alertDialogTheme">@style/AppDialogLight</item>
+    </style>
+    <style name="AppDialogLight" parent="android:style/Theme.Material.Light.Dialog.Alert">
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:windowBackground">@drawable/dialog_bg</item>
+    </style>
+</resources>

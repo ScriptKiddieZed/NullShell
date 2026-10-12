@@ -1,0 +1,146 @@
+{
+  "name": "Shell",
+  "scopeName": "source.shell",
+  "patterns": [
+    {
+      "include": "#shebang"
+    },
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#string"
+    },
+    {
+      "include": "#subst"
+    },
+    {
+      "include": "#var"
+    },
+    {
+      "include": "#funcdef"
+    },
+    {
+      "include": "#keyword"
+    },
+    {
+      "include": "#builtin"
+    },
+    {
+      "include": "#assign"
+    },
+    {
+      "include": "#option"
+    },
+    {
+      "include": "#operator"
+    },
+    {
+      "include": "#number"
+    }
+  ],
+  "repository": {
+    "shebang": {
+      "match": "^#!.*$",
+      "name": "comment.line.shebang.shell"
+    },
+    "comment": {
+      "match": "(?:^|(?<=\\s))#.*$",
+      "name": "comment.line.number-sign.shell"
+    },
+    "string": {
+      "patterns": [
+        {
+          "begin": "\"",
+          "end": "\"",
+          "name": "string.quoted.double.shell",
+          "patterns": [
+            {
+              "match": "\\\\.",
+              "name": "constant.character.escape.shell"
+            },
+            {
+              "include": "#subst"
+            },
+            {
+              "include": "#var"
+            }
+          ]
+        },
+        {
+          "begin": "'",
+          "end": "'",
+          "name": "string.quoted.single.shell"
+        },
+        {
+          "begin": "`",
+          "end": "`",
+          "name": "string.interpolated.backtick.shell",
+          "patterns": [
+            {
+              "include": "$self"
+            }
+          ]
+        }
+      ]
+    },
+    "subst": {
+      "begin": "\\$\\(",
+      "end": "\\)",
+      "name": "string.interpolated.dollar.shell",
+      "patterns": [
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    "var": {
+      "patterns": [
+        {
+          "match": "\\$\\{[^}]*\\}",
+          "name": "variable.other.shell"
+        },
+        {
+          "match": "\\$[A-Za-z_][A-Za-z0-9_]*",
+          "name": "variable.other.shell"
+        },
+        {
+          "match": "\\$[0-9@#?$!*\\-]",
+          "name": "variable.language.special.shell"
+        }
+      ]
+    },
+    "funcdef": {
+      "match": "^\\s*(?:function\\s+)?([A-Za-z_][A-Za-z0-9_-]*)\\s*\\(\\)",
+      "captures": {
+        "1": {
+          "name": "entity.name.function.shell"
+        }
+      }
+    },
+    "keyword": {
+      "match": "\\b(?:if|then|else|elif|fi|for|while|until|do|done|case|esac|in|function|select|time|coproc)\\b",
+      "name": "keyword.control.shell"
+    },
+    "builtin": {
+      "match": "\\b(?:echo|cd|export|source|alias|unalias|unset|read|exit|return|local|declare|set|shift|trap|eval|exec|printf|test|true|false|break|continue|readonly|typeset|type|command|wait|kill|umask|ulimit|pwd|pushd|popd|history|jobs|fg|bg|let|getopts|hash|help)\\b",
+      "name": "support.function.builtin.shell"
+    },
+    "assign": {
+      "match": "\\b[A-Za-z_][A-Za-z0-9_]*(?==)",
+      "name": "variable.other.assignment.shell"
+    },
+    "option": {
+      "match": "(?<=\\s)--?[A-Za-z][A-Za-z0-9_-]*",
+      "name": "constant.other.option.shell"
+    },
+    "operator": {
+      "match": "&&|\\|\\||;;|[|&;]|>>?|<<<?|[<>]&?[0-9]*",
+      "name": "keyword.operator.shell"
+    },
+    "number": {
+      "match": "\\b[0-9]+\\b",
+      "name": "constant.numeric.shell"
+    }
+  }
+}

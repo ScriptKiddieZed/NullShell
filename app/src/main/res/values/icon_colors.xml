@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_bg_nullshell">#0E1013</color>
+    <color name="ic_bg_amoled">#000000</color>
+    <color name="ic_bg_kali">#0F1218</color>
+    <color name="ic_bg_midnight">#0B1020</color>
+    <color name="ic_bg_dracula">#21222C</color>
+    <color name="ic_bg_nord">#242933</color>
+    <color name="ic_bg_gruvbox">#1D2021</color>
+    <color name="ic_bg_solarized_dark">#00212B</color>
+    <color name="ic_bg_tokyo">#16161E</color>
+    <color name="ic_bg_monokai">#1E1F1C</color>
+    <color name="ic_bg_mocha">#181825</color>
+    <color name="ic_bg_hacker">#000000</color>
+    <color name="ic_bg_light">#F6F7F9</color>
+    <color name="ic_bg_solarized_light">#FDF6E3</color>
+    <color name="ic_bg_latte">#EFF1F5</color>
+    <color name="ic_bg_paper">#FAF8F3</color>
+</resources>

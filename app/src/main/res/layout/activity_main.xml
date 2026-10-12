@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root" android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/bg">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="46dp"
+        android:orientation="horizontal" android:gravity="center_vertical" android:paddingStart="6dp">
+        <HorizontalScrollView android:id="@+id/tabscroll" android:layout_width="0dp" android:layout_height="match_parent"
+            android:layout_weight="1" android:scrollbars="none" android:overScrollMode="never">
+            <LinearLayout android:id="@+id/tabbar" android:layout_width="wrap_content" android:layout_height="match_parent"
+                android:orientation="horizontal" android:gravity="center_vertical"/>
+        </HorizontalScrollView>
+        <FrameLayout android:id="@+id/btn_cmds_slot" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <FrameLayout android:id="@+id/btn_new_slot" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <FrameLayout android:id="@+id/btn_menu_slot" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line"/>
+
+    <LinearLayout android:id="@+id/busy" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:visibility="gone" android:background="@color/surface">
+        <TextView android:id="@+id/busy_text" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:paddingStart="14dp" android:paddingEnd="14dp" android:paddingTop="8dp" android:paddingBottom="6dp"
+            android:textSize="12sp" android:textColor="#8B929C"/>
+        <ProgressBar android:id="@+id/busy_bar" style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent" android:layout_height="3dp" android:max="100"/>
+    </LinearLayout>
+
+    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+        <com.zed.nullshell.TerminalView android:id="@+id/terminal"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:paddingStart="4dp" android:paddingEnd="4dp"/>
+        <LinearLayout android:id="@+id/empty" android:layout_width="match_parent" android:layout_height="match_parent"
+            android:orientation="vertical" android:gravity="center" android:background="@color/bg"
+            android:paddingStart="32dp" android:paddingEnd="32dp" android:visibility="gone"/>
+        <View android:id="@+id/scrim" android:layout_width="match_parent" android:layout_height="match_parent"
+            android:background="#99000000" android:visibility="gone"/>
+        <FrameLayout android:id="@+id/drawer_slot" android:layout_width="300dp" android:layout_height="match_parent"
+            android:layout_gravity="end" android:visibility="gone"/>
+    </FrameLayout>
+
+    <View android:id="@+id/keys_divider" android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line"/>
+    <HorizontalScrollView android:id="@+id/keys_scroll" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:scrollbars="none" android:overScrollMode="never" android:fillViewport="true">
+        <LinearLayout android:id="@+id/extrakeys" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:padding="3dp"/>
+    </HorizontalScrollView>
+</LinearLayout>

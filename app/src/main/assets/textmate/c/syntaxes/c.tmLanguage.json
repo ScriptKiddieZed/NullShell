@@ -1,0 +1,102 @@
+{
+  "name": "C/C++",
+  "scopeName": "source.c",
+  "patterns": [
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#preproc"
+    },
+    {
+      "include": "#string"
+    },
+    {
+      "include": "#char"
+    },
+    {
+      "include": "#number"
+    },
+    {
+      "include": "#keyword"
+    },
+    {
+      "include": "#type"
+    },
+    {
+      "include": "#const"
+    },
+    {
+      "include": "#call"
+    }
+  ],
+  "repository": {
+    "comment": {
+      "patterns": [
+        {
+          "match": "//.*$",
+          "name": "comment.line.double-slash.c"
+        },
+        {
+          "begin": "/\\*",
+          "end": "\\*/",
+          "name": "comment.block.c"
+        }
+      ]
+    },
+    "preproc": {
+      "patterns": [
+        {
+          "match": "^\\s*#\\s*include\\s*(<[^>]*>)",
+          "captures": {
+            "0": {
+              "name": "meta.preprocessor.include.c"
+            },
+            "1": {
+              "name": "string.quoted.other.lt-gt.include.c"
+            }
+          }
+        },
+        {
+          "match": "^\\s*#\\s*[A-Za-z_]+",
+          "name": "meta.preprocessor.c keyword.control.directive.c"
+        }
+      ]
+    },
+    "string": {
+      "begin": "\"",
+      "end": "\"",
+      "name": "string.quoted.double.c",
+      "patterns": [
+        {
+          "match": "\\\\.",
+          "name": "constant.character.escape.c"
+        }
+      ]
+    },
+    "char": {
+      "match": "'(?:[^'\\\\]|\\\\.)'",
+      "name": "string.quoted.single.c"
+    },
+    "number": {
+      "match": "\\b(?:0[xX][0-9a-fA-F]+|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)[uUlLfF]*\\b",
+      "name": "constant.numeric.c"
+    },
+    "keyword": {
+      "match": "\\b(?:auto|break|case|catch|class|const|constexpr|continue|default|delete|do|else|enum|explicit|extern|for|friend|goto|if|inline|namespace|new|noexcept|operator|private|protected|public|register|return|sizeof|static|struct|switch|template|this|throw|try|typedef|typename|union|using|virtual|volatile|while)\\b",
+      "name": "keyword.control.c"
+    },
+    "type": {
+      "match": "\\b(?:void|char|short|int|long|float|double|signed|unsigned|bool|size_t|ssize_t|uint8_t|uint16_t|uint32_t|uint64_t|int8_t|int16_t|int32_t|int64_t|wchar_t|FILE)\\b",
+      "name": "storage.type.c"
+    },
+    "const": {
+      "match": "\\b(?:NULL|true|false|nullptr|EOF|stdin|stdout|stderr)\\b",
+      "name": "constant.language.c"
+    },
+    "call": {
+      "match": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()",
+      "name": "entity.name.function.c"
+    }
+  }
+}

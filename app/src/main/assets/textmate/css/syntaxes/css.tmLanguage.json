@@ -1,0 +1,73 @@
+{
+  "name": "CSS",
+  "scopeName": "source.css",
+  "patterns": [
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#at"
+    },
+    {
+      "include": "#prop"
+    },
+    {
+      "include": "#string"
+    },
+    {
+      "include": "#color"
+    },
+    {
+      "include": "#num"
+    },
+    {
+      "include": "#selector"
+    },
+    {
+      "include": "#fn"
+    }
+  ],
+  "repository": {
+    "comment": {
+      "begin": "/\\*",
+      "end": "\\*/",
+      "name": "comment.block.css"
+    },
+    "at": {
+      "match": "@[A-Za-z-]+",
+      "name": "keyword.control.at-rule.css"
+    },
+    "prop": {
+      "match": "\\b[a-z-]+(?=\\s*:(?!:))",
+      "name": "support.type.property-name.css"
+    },
+    "string": {
+      "patterns": [
+        {
+          "match": "\"(?:[^\"\\\\]|\\\\.)*\"",
+          "name": "string.quoted.double.css"
+        },
+        {
+          "match": "'(?:[^'\\\\]|\\\\.)*'",
+          "name": "string.quoted.single.css"
+        }
+      ]
+    },
+    "color": {
+      "match": "#[0-9a-fA-F]{3,8}\\b",
+      "name": "constant.other.color.css"
+    },
+    "num": {
+      "match": "-?[0-9]*\\.?[0-9]+(?:px|em|rem|%|vh|vw|s|ms|deg|pt|fr)?",
+      "name": "constant.numeric.css"
+    },
+    "selector": {
+      "match": "[.#][A-Za-z_-][A-Za-z0-9_-]*|(?<![\\w-])(?:html|body|a|div|span|p|h[1-6]|ul|ol|li|table|tr|td|th|img|input|button|form|label|nav|header|footer|section|main|code|pre)(?![\\w-])",
+      "name": "entity.name.tag.css"
+    },
+    "fn": {
+      "match": "[A-Za-z-]+(?=\\()",
+      "name": "support.function.css"
+    }
+  }
+}

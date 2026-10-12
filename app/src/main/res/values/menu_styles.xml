@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated: one popup-menu look per app theme. The framework popup keeps its own sizes; only colours and background change. -->
+<resources>
+    <style name="MenuPopup_nullshell" parent="android:style/Widget.Material.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_nullshell</item>
+    </style>
+    <style name="MenuText_nullshell" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_nullshell</item>
+    </style>
+    <style name="MenuTextSmall_nullshell" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_nullshell</item>
+    </style>
+    <style name="MenuTheme_nullshell">
+        <item name="android:popupMenuStyle">@style/MenuPopup_nullshell</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_nullshell</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_nullshell</item>
+        <item name="android:colorControlHighlight">#33E6E8EB</item>
+        <item name="android:textColorPrimary">@color/menu_text_nullshell</item>
+    </style>
+    <style name="MenuPopup_amoled" parent="android:style/Widget.Material.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_amoled</item>
+    </style>
+    <style name="MenuText_amoled" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_amoled</item>
+    </style>
+    <style name="MenuTextSmall_amoled" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_amoled</item>
+    </style>
+    <style name="MenuTheme_amoled">
+        <item name="android:popupMenuStyle">@style/MenuPopup_amoled</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_amoled</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_amoled</item>
+        <item name="android:colorControlHighlight">#33E8E8E8</item>
+        <item name="android:textColorPrimary">@color/menu_text_amoled</item>
+    </style>
+    <style name="MenuPopup_kali" parent="android:style/Widget.Material.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_kali</item>
+    </style>
+    <style name="MenuText_kali" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_kali</item>
+    </style>
+    <style name="MenuTextSmall_kali" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_kali</item>
+    </style>
+    <style name="MenuTheme_kali">
+        <item name="android:popupMenuStyle">@style/MenuPopup_kali</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_kali</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_kali</item>
+        <item name="android:colorControlHighlight">#33E3E7EF</item>
+        <item name="android:textColorPrimary">@color/menu_text_kali</item>
+    </style>
+    <style name="MenuPopup_midnight" parent="android:style/Widget.Material.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_midnight</item>
+    </style>
+    <style name="MenuText_midnight" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_midnight</item>
+    </style>
+    <style name="MenuTextSmall_midnight" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_midnight</item>
+    </style>
+    <style name="MenuTheme_midnight">
+        <item name="android:popupMenuStyle">@style/MenuPopup_midnight</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_midnight</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_midnight</item>
+        <item name="android:colorControlHighlight">#33DCE3F5</item>
+        <item name="android:textColorPrimary">@color/menu_text_midnight</item>
+    </style>
+    <style name="MenuPopup_dracula" parent="android:style/Widget.Material.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_dracula</item>
+    </style>
+    <style name="MenuText_dracula" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_dracula</item>
+    </style>
+    <style name="MenuTextSmall_dracula" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_dracula</item>
+    </style>
+    <style name="MenuTheme_dracula">
+        <item name="android:popupMenuStyle">@style/MenuPopup_dracula</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_dracula</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_dracula</item>
+        <item name="android:colorControlHighlight">#33F8F8F2</item>
+        <item name="android:textColorPrimary">@color/menu_text_dracula</item>
+    </style>
+    <style name="MenuPopup_nord" parent="android:style/Widget.Material.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_nord</item>
+    </style>
+    <style name="MenuText_nord" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_nord</item>
+    </style>
+    <style name="MenuTextSmall_nord" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_nord</item>
+    </style>
+    <style name="MenuTheme_nord">
+        <item name="android:popupMenuStyle">@style/MenuPopup_nord</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_nord</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_nord</item>
+        <item name="android:colorControlHighlight">#33ECEFF4</item>
+        <item name="android:textColorPrimary">@color/menu_text_nord</item>
+    </style>
+    <style name="MenuPopup_gruvbox" parent="android:style/Widget.Material.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_gruvbox</item>
+    </style>
+    <style name="MenuText_gruvbox" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_gruvbox</item>
+    </style>
+    <style name="MenuTextSmall_gruvbox" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_gruvbox</item>
+    </style>
+    <style name="MenuTheme_gruvbox">
+        <item name="android:popupMenuStyle">@style/MenuPopup_gruvbox</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_gruvbox</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_gruvbox</item>
+        <item name="android:colorControlHighlight">#33EBDBB2</item>
+        <item name="android:textColorPrimary">@color/menu_text_gruvbox</item>
+    </style>
+    <style name="MenuPopup_solarized_dark" parent="android:style/Widget.Material.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_solarized_dark</item>
+    </style>
+    <style name="MenuText_solarized_dark" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_solarized_dark</item>
+    </style>
+    <style name="MenuTextSmall_solarized_dark" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_solarized_dark</item>
+    </style>
+    <style name="MenuTheme_solarized_dark">
+        <item name="android:popupMenuStyle">@style/MenuPopup_solarized_dark</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_solarized_dark</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_solarized_dark</item>
+        <item name="android:colorControlHighlight">#33A7B5B5</item>
+        <item name="android:textColorPrimary">@color/menu_text_solarized_dark</item>
+    </style>
+    <style name="MenuPopup_tokyo" parent="android:style/Widget.Material.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_tokyo</item>
+    </style>
+    <style name="MenuText_tokyo" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_tokyo</item>
+    </style>
+    <style name="MenuTextSmall_tokyo" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_tokyo</item>
+    </style>
+    <style name="MenuTheme_tokyo">
+        <item name="android:popupMenuStyle">@style/MenuPopup_tokyo</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_tokyo</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_tokyo</item>
+        <item name="android:colorControlHighlight">#33C0CAF5</item>
+        <item name="android:textColorPrimary">@color/menu_text_tokyo</item>
+    </style>
+    <style name="MenuPopup_monokai" parent="android:style/Widget.Material.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_monokai</item>
+    </style>
+    <style name="MenuText_monokai" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_monokai</item>
+    </style>
+    <style name="MenuTextSmall_monokai" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_monokai</item>
+    </style>
+    <style name="MenuTheme_monokai">
+        <item name="android:popupMenuStyle">@style/MenuPopup_monokai</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_monokai</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_monokai</item>
+        <item name="android:colorControlHighlight">#33F8F8F2</item>
+        <item name="android:textColorPrimary">@color/menu_text_monokai</item>
+    </style>
+    <style name="MenuPopup_mocha" parent="android:style/Widget.Material.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_mocha</item>
+    </style>
+    <style name="MenuText_mocha" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_mocha</item>
+    </style>
+    <style name="MenuTextSmall_mocha" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_mocha</item>
+    </style>
+    <style name="MenuTheme_mocha">
+        <item name="android:popupMenuStyle">@style/MenuPopup_mocha</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_mocha</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_mocha</item>
+        <item name="android:colorControlHighlight">#33CDD6F4</item>
+        <item name="android:textColorPrimary">@color/menu_text_mocha</item>
+    </style>
+    <style name="MenuPopup_hacker" parent="android:style/Widget.Material.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_hacker</item>
+    </style>
+    <style name="MenuText_hacker" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_hacker</item>
+    </style>
+    <style name="MenuTextSmall_hacker" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_hacker</item>
+    </style>
+    <style name="MenuTheme_hacker">
+        <item name="android:popupMenuStyle">@style/MenuPopup_hacker</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_hacker</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_hacker</item>
+        <item name="android:colorControlHighlight">#338CFFA0</item>
+        <item name="android:textColorPrimary">@color/menu_text_hacker</item>
+    </style>
+    <style name="MenuPopup_light" parent="android:style/Widget.Material.Light.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_light</item>
+    </style>
+    <style name="MenuText_light" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_light</item>
+    </style>
+    <style name="MenuTextSmall_light" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_light</item>
+    </style>
+    <style name="MenuTheme_light">
+        <item name="android:popupMenuStyle">@style/MenuPopup_light</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_light</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_light</item>
+        <item name="android:colorControlHighlight">#331B1F24</item>
+        <item name="android:textColorPrimary">@color/menu_text_light</item>
+    </style>
+    <style name="MenuPopup_solarized_light" parent="android:style/Widget.Material.Light.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_solarized_light</item>
+    </style>
+    <style name="MenuText_solarized_light" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_solarized_light</item>
+    </style>
+    <style name="MenuTextSmall_solarized_light" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_solarized_light</item>
+    </style>
+    <style name="MenuTheme_solarized_light">
+        <item name="android:popupMenuStyle">@style/MenuPopup_solarized_light</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_solarized_light</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_solarized_light</item>
+        <item name="android:colorControlHighlight">#333F565F</item>
+        <item name="android:textColorPrimary">@color/menu_text_solarized_light</item>
+    </style>
+    <style name="MenuPopup_latte" parent="android:style/Widget.Material.Light.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_latte</item>
+    </style>
+    <style name="MenuText_latte" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_latte</item>
+    </style>
+    <style name="MenuTextSmall_latte" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_latte</item>
+    </style>
+    <style name="MenuTheme_latte">
+        <item name="android:popupMenuStyle">@style/MenuPopup_latte</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_latte</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_latte</item>
+        <item name="android:colorControlHighlight">#334C4F69</item>
+        <item name="android:textColorPrimary">@color/menu_text_latte</item>
+    </style>
+    <style name="MenuPopup_paper" parent="android:style/Widget.Material.Light.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_bg_paper</item>
+    </style>
+    <style name="MenuText_paper" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/menu_text_paper</item>
+    </style>
+    <style name="MenuTextSmall_paper" parent="android:style/TextAppearance.Material.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/menu_text_paper</item>
+    </style>
+    <style name="MenuTheme_paper">
+        <item name="android:popupMenuStyle">@style/MenuPopup_paper</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MenuText_paper</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MenuTextSmall_paper</item>
+        <item name="android:colorControlHighlight">#332B2B2B</item>
+        <item name="android:textColorPrimary">@color/menu_text_paper</item>
+    </style>
+</resources>
