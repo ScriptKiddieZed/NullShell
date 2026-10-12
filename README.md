@@ -43,7 +43,7 @@ NullShell runs a full Kali Linux userspace through [PRoot](https://proot-me.gith
 
 ## Building from source
 
-NullShell is a standard Android Gradle project (Java, no Kotlin in the app module) and is primarily developed on-device with [CodeAssist](https://github.com/tyronscott/CodeAssist), but builds the same way with Android Studio or plain Gradle.
+NullShell is a standard Android Gradle project (Java, no Kotlin in the app module) and is primarily developed on-device with [CodeAssist](https://github.com/tyron12233/CodeAssist), but builds the same way with Android Studio or plain Gradle.
 
 Requirements: JDK 17, Android SDK (compileSdk 35), and a device or emulator running Android 8.0 (API 26) or newer.
 
