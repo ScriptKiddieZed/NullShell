@@ -211,7 +211,7 @@ public class SettingsActivity extends Activity {
         int n = SnippetStore.get().all().size();
         setSummary("commands", n == 0 ? "None saved" : n + " saved");
 
-        setSummary("about", "Version 0.37");
+        setSummary("about", "Version 1.0");
 
         if (!RootfsManager.dir(this).exists()) {
             setSummary("rootfs", "Not installed");
@@ -555,7 +555,7 @@ public class SettingsActivity extends Activity {
                 .setPositiveButton("Reset", (d, w) -> { sp.edit().clear().apply(); recreate(); })
                 .setNegativeButton("Cancel", null).show());
         card.addView(reset);
-        note("NullShell 0.17");
+        note("NullShell 1.0");
         note("Open-source licenses: see THIRD_PARTY_NOTICES.md in the project.");
     }
 
