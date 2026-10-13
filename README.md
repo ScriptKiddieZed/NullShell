@@ -9,11 +9,25 @@ NullShell runs a full Kali Linux userspace through [PRoot](https://proot-me.gith
 ## Features
 
 ### Terminal
+
+<details>
+  <summary>📱 Click to view screenshot</summary>
+  <br>
+  <img src="Docs/terminal.jpg" height="500" />
+</details>
+
 - A real Kali Linux userspace (ARM64), launched through PRoot — install packages with `apt`, run the tools you already know.
 - Background jobs run as a foreground service, so long commands keep going while you switch apps.
 - A pure-Java terminal fast path, scrollback limits and other memory controls so long sessions stay responsive on phones.
 
 ### Code editor
+
+<details>
+  <summary>📱 Click to view screenshot</summary>
+  <br>
+  <img src="Docs/code_editor.jpg" height="500" />
+</details>
+
 - Built on [sora-editor](https://github.com/Rosemoe/sora-editor), with TextMate-grammar syntax highlighting and Language Server Protocol support.
 - Highlighting and/or an LSP-backed language server (for diagnostics, completion and formatting) for: Python, JavaScript, TypeScript, JSON, HTML, CSS, XML, Markdown, Shell, C, C++, YAML, Java, Kotlin, Lua, Go, Rust, PHP, Ruby, SQL, Dockerfile, Makefile, INI/config files and Diff/patch files.
 - Language servers install on demand into the Kali userspace (e.g. `pylsp`, `typescript-language-server`, `clangd`, `gopls`, `rust-analyzer`, `intelephense`, `solargraph`), with per-server memory caps and idle shutdown.
@@ -21,22 +35,57 @@ NullShell runs a full Kali Linux userspace through [PRoot](https://proot-me.gith
 - Open text files from other apps directly into the NullShell editor, and jump from the editor to "show in file manager".
 
 ### In-app browser
+
+<details>
+  <summary>📱 Click to view screenshot</summary>
+  <br>
+  <img src="Docs/browser.jpg" height="500" />
+</details>
+
 - Tabbed WebView browser with history, and app-private CA-certificate trust so you can point it at your own intercepting proxy (mitmproxy, Caido, Burp, etc.) without touching the system trust store.
 - A desktop-style developer tools panel: Elements, Console, Network, Sources, Application, Security, Performance and a Device (user-agent/viewport) emulation panel, with a code-wrap toggle in the Elements/Sources views.
 
 ### Custom commands (snippets)
+
+<details>
+  <summary>📱 Click to view screenshot</summary>
+  <br>
+  <img src="Docs/command_snippets.jpg" height="500" />
+</details>
+
 - Save frequently used shell commands as reusable, named snippets with a one-tap run dialog.
 - Flexible variables in a command template: typed/picked file and directory inputs, filters (`{url|host}`), derived defaults, masked secret fields (`{pass*}`), multi-select choices (`{tags+,:a|b}`), and conditional blocks (`{if ...}`) so one snippet can adapt to how you fill it in.
 
 ### File manager
+
+<details>
+  <summary>📱 Click to view screenshot</summary>
+  <br>
+  <img src="Docs/file_manager.jpg" height="500" />
+</details>
+
 - A native file manager (browse, move, copy, rename, delete, open-with) covering both the app's own storage and the Kali rootfs.
 
 ### AI chat
+
+<details>
+  <summary>📱 Click to view screenshot</summary>
+  <br>
+  <img src="Docs/ai_chat.jpg" height="500" />
+</details>
+
 - An in-app assistant powered by the Gemini API: multiple assistants with their own system prompts, streamed responses, model picker, file attachments, and saved conversations.
 - Per-message actions (copy, copy as plain text, regenerate, delete) and long-press text selection.
 - Paste a shell code block straight from a chat into the terminal, or export a conversation as Markdown.
 
 ### Appearance
+
+<details>
+  <summary>📱 Click to view screenshot</summary>
+  <br>
+  <img src="Docs/appearance.jpg" height="500" />
+</details>
+
 - 16 built-in themes covering the terminal, editor and UI, each with its own matching launcher icon (with an optional "match theme" switch), adjustable accent colour and corner roundness, and automatic day/night switching.
 
 ### Networking
