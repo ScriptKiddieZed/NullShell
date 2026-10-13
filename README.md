@@ -2,6 +2,8 @@
 
 A rootless Kali Linux environment and development workspace for Android (ARM64) — terminal, code editor, in-app browser, file manager and an AI assistant, all in one APK, no root required.
 
+![banner](https://github.com/ScriptKiddieZed/NullShell/blob/124f7b95837b9612afc9f379acb893f020b4fd5e/banner.png)
+
 NullShell runs a full Kali Linux userspace through [PRoot](https://proot-me.github.io/), directly from the app. Kali Linux is a trademark of OffSec; NullShell is not affiliated with or endorsed by it.
 
 ## Features
