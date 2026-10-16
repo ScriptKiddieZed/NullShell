@@ -279,6 +279,7 @@
         <activity android:name=".AssistantsActivity" android:exported="false" android:label="Assistants" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|fontScale"/>
         <activity android:name=".AiSettingsActivity" android:exported="false" android:label="AI settings" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|fontScale"/>
         <activity android:name=".NetworkActivity" android:exported="false" android:label="Network" android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|fontScale"/>
+        <activity android:name=".VncActivity" android:exported="false" android:label="VNC server" android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|fontScale"/>
         <activity android:name=".BrowserHistoryActivity" android:exported="false" android:label="History"
             android:windowSoftInputMode="adjustResize"/>
         <meta-data android:name="android.webkit.WebView.EnableSafeBrowsing" android:value="false"/>
@@ -287,6 +288,9 @@
         </service>
         <service android:name=".FileJobService" android:exported="false" android:foregroundServiceType="specialUse">
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="Copy, move, extract and compress files in the background"/>
+        </service>
+        <service android:name=".VncService" android:exported="false" android:foregroundServiceType="specialUse">
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="Keeps the Kali VNC server running while a VNC viewer app is used"/>
         </service>
     </application>
 </manifest>

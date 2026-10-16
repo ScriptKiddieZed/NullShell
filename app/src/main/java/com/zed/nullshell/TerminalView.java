@@ -201,6 +201,21 @@ public class TerminalView extends View {
         invalidate();
     }
 
+    private Typeface tfRegular = Typeface.MONOSPACE;
+    private Typeface tfBold;                  // null = bold is faked by smearing the regular face
+
+    /** Sets the terminal font; null regular means the system monospace font. Re-measures the cells and the grid. */
+    public void setFont(Typeface regular, Typeface bold) {
+        if (regular == null) { regular = Typeface.MONOSPACE; bold = null; }
+        if (regular == tfRegular && bold == tfBold) return;
+        tfRegular = regular;
+        tfBold = bold;
+        paint.setTypeface(regular);
+        setTextSizePx(textPx);
+        recomputeGrid(getWidth(), getHeight());
+        invalidate();
+    }
+
     public void setModifierListener(ModifierListener l) { modListener = l; }
     public int getCols() { return cols; }
     public int getRows() { return rows; }
@@ -299,7 +314,10 @@ public class TerminalView extends View {
                         }
                         if (any || (at & (TermEmulator.AT_UNDER | TermEmulator.AT_STRIKE)) != 0) {
                             paint.setColor(rf);
-                            paint.setFakeBoldText((at & TermEmulator.AT_BOLD) != 0);
+                            boolean bold = (at & TermEmulator.AT_BOLD) != 0;
+                            Typeface face = bold && tfBold != null ? tfBold : tfRegular;
+                            if (paint.getTypeface() != face) paint.setTypeface(face);
+                            paint.setFakeBoldText(bold && tfBold == null);
                             paint.setTextSkewX((at & TermEmulator.AT_ITALIC) != 0 ? -0.2f : 0f);
                             paint.setUnderlineText((at & TermEmulator.AT_UNDER) != 0);
                             paint.setStrikeThruText((at & TermEmulator.AT_STRIKE) != 0);

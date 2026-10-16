@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -38,6 +39,7 @@ public class SettingsActivity extends Activity {
             {"rootfs", "Kali rootfs"},
             {"editor", "Editor"},
             {"browser", "Browser"},
+            {"vnc", "VNC server"},
             {"commands", "Commands"},
             {"about", "About & reset"},
     };
@@ -114,6 +116,7 @@ public class SettingsActivity extends Activity {
                 case "rootfs": buildRootfsSection(); refreshRootfsInfo(); break;
                 case "commands": buildCommandsSection(); break;
                 case "editor": buildEditorSection(); break;
+                case "vnc": buildVncSection(); break;
                 default: buildOtherSection(); break;
             }
         }
@@ -188,7 +191,9 @@ public class SettingsActivity extends Activity {
     private void refreshSummaries() {
         setSummary("appearance", (Theme.auto(this) ? "Automatic  \u00B7  " + Theme.byId(Theme.dayId(this)).name + " / " + Theme.byId(Theme.nightId(this)).name
                 : Theme.current.name) + (Theme.accent(this) != 0 ? "  \u00B7  custom accent" : ""));
-        setSummary("terminal", Prefs.fontSizeSp(this) + " sp  \u00B7  " + Prefs.SCHEME_NAMES[Prefs.scheme(this)]);
+        String fontLabel = TerminalFonts.currentLabel(this);
+        setSummary("terminal", Prefs.fontSizeSp(this) + " sp  \u00B7  " + Prefs.SCHEME_NAMES[Prefs.scheme(this)]
+                + (fontLabel.startsWith("System") ? "" : "  \u00B7  " + fontLabel));
 
         String shell = Prefs.shell(this);
         setSummary("sessions", shell.substring(shell.lastIndexOf('/') + 1) + "  \u00B7  " + Prefs.workdir(this)
@@ -207,11 +212,14 @@ public class SettingsActivity extends Activity {
         setSummary("browser", (BrowserProxy.active(this) ? "Proxy " + BrowserProxy.label(this) : "No proxy")
                 + "  \u00B7  " + BrowserCerts.list(this).size() + " CA");
 
+        setSummary("vnc", Prefs.vncWidth(this) + "×" + Prefs.vncHeight(this) + "  ·  :" + Prefs.vncDisplay(this)
+                + "  ·  " + (Prefs.vncLocalOnly(this) ? "this phone only" : "network access"));
+
         SnippetStore.get().init(this);
         int n = SnippetStore.get().all().size();
         setSummary("commands", n == 0 ? "None saved" : n + " saved");
 
-        setSummary("about", "Version 1.0");
+        setSummary("about", "Version 1.1");
 
         if (!RootfsManager.dir(this).exists()) {
             setSummary("rootfs", "Not installed");
@@ -264,12 +272,23 @@ public class SettingsActivity extends Activity {
                 }).show());
         card.addView(scheme);
 
+        rowLabel("Font");
+        fontBtn = Ui.button(this, TerminalFonts.currentLabel(this), Ui.SECONDARY);
+        fontBtn.setOnClickListener(v -> showFontPicker());
+        card.addView(fontBtn);
+        removeFontsBtn = Ui.button(this, "", Ui.SECONDARY);
+        removeFontsBtn.setOnClickListener(v -> confirmRemoveFonts());
+        card.addView(removeFontsBtn, topMargin(8));
+        note("Nerd Fonts add the icons and symbols that prompts and tools such as Starship, Powerlevel10k, eza and lsd "
+                + "draw. A font is downloaded once from github.com/ryanoasis/nerd-fonts and kept in the app. Until one is "
+                + "selected, the icons in the preview below show as empty boxes.");
+
         preview = new TextView(this);
         preview.setTypeface(Typeface.MONOSPACE);
-        preview.setText("root@kali:~# ls --color\nDocuments  Downloads  tools");
+        preview.setText("root@kali:~# ls --color\nDocuments  Downloads  tools\n main         ");
         preview.setPadding(Ui.dp(this, 12), Ui.dp(this, 10), Ui.dp(this, 12), Ui.dp(this, 10));
         card.addView(preview, topMargin(10));
-        updatePreview();
+        refreshFontRows();
 
         final TextView sbLabel = rowLabel(scrollbackText(Prefs.termScrollback(this)));
         SeekBar sb = new SeekBar(this);
@@ -522,6 +541,200 @@ public class SettingsActivity extends Activity {
         note("The line under each server overrides its start command, e.g. python3 -m pylsp. Leave empty for the default.");
     }
 
+    // ------------------------------------------------------------------ VNC server
+
+    private SeekBar vncWBar, vncHBar;
+    private TextView vncWLabel, vncHLabel;
+
+    private static final int VNC_STEP = 8;
+
+    private static String vncWText(int w) { return "Width  ·  " + w + " px"; }
+    private static String vncHText(int h) { return "Height  ·  " + h + " px"; }
+    private static String vncDpiText(int dpi) { return "Scale  ·  " + dpi + " DPI"; }
+    private static String vncDisplayText(int d) { return ":" + d + "  (port " + (5900 + d) + ")"; }
+
+    private void buildVncSection() {
+        section("VNC server");
+        note("A graphical IceWM desktop inside Kali, served over VNC for a separate VNC viewer app. It is software "
+                + "rendered, so a smaller size and 16-bit colour run faster. Changes apply the next time the server "
+                + "starts (use Restart on the VNC server screen).");
+
+        // ---- resolution
+        vncWLabel = rowLabel(vncWText(Prefs.vncWidth(this)));
+        vncWBar = new SeekBar(this);
+        Ui.tint(vncWBar);
+        vncWBar.setMax((2560 - 640) / VNC_STEP);
+        vncWBar.setProgress((Prefs.vncWidth(this) - 640) / VNC_STEP);
+        vncWBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override public void onProgressChanged(SeekBar s, int p, boolean user) {
+                if (!user) return;
+                int v = 640 + p * VNC_STEP;
+                vncWLabel.setText(vncWText(v));
+                sp.edit().putInt(Prefs.VNC_W, v).apply();
+            }
+            @Override public void onStartTrackingTouch(SeekBar s) { }
+            @Override public void onStopTrackingTouch(SeekBar s) { }
+        });
+        card.addView(vncWBar);
+
+        vncHLabel = rowLabel(vncHText(Prefs.vncHeight(this)));
+        vncHBar = new SeekBar(this);
+        Ui.tint(vncHBar);
+        vncHBar.setMax((1600 - 480) / VNC_STEP);
+        vncHBar.setProgress((Prefs.vncHeight(this) - 480) / VNC_STEP);
+        vncHBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override public void onProgressChanged(SeekBar s, int p, boolean user) {
+                if (!user) return;
+                int v = 480 + p * VNC_STEP;
+                vncHLabel.setText(vncHText(v));
+                sp.edit().putInt(Prefs.VNC_H, v).apply();
+            }
+            @Override public void onStartTrackingTouch(SeekBar s) { }
+            @Override public void onStopTrackingTouch(SeekBar s) { }
+        });
+        card.addView(vncHBar);
+
+        final TextView presets = Ui.button(this, "Size presets…", Ui.SECONDARY);
+        presets.setOnClickListener(v -> showVncPresets());
+        card.addView(presets, topMargin(8));
+
+        // ---- colour depth
+        rowLabel("Colour depth");
+        final String[] depthNames = {"16-bit  ·  faster", "24-bit  ·  better colour"};
+        final TextView depthBtn = Ui.button(this, depthNames[Prefs.vncDepthIndex(this)], Ui.SECONDARY);
+        depthBtn.setOnClickListener(v -> new Dlg(this).setTitle("Colour depth")
+                .setSingleChoiceItems(depthNames, Prefs.vncDepthIndex(this), (d, which) -> {
+                    sp.edit().putInt(Prefs.VNC_DEPTH, which).apply();
+                    depthBtn.setText(depthNames[which]);
+                    d.dismiss();
+                }).show());
+        card.addView(depthBtn);
+
+        // ---- scale
+        final TextView dpiLabel = rowLabel(vncDpiText(Prefs.vncDpi(this)));
+        SeekBar dpiBar = new SeekBar(this);
+        Ui.tint(dpiBar);
+        dpiBar.setMax((240 - 72) / VNC_STEP);
+        dpiBar.setProgress((Prefs.vncDpi(this) - 72) / VNC_STEP);
+        dpiBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override public void onProgressChanged(SeekBar s, int p, boolean user) {
+                if (!user) return;
+                int v = 72 + p * VNC_STEP;
+                dpiLabel.setText(vncDpiText(v));
+                sp.edit().putInt(Prefs.VNC_DPI, v).apply();
+            }
+            @Override public void onStartTrackingTouch(SeekBar s) { }
+            @Override public void onStopTrackingTouch(SeekBar s) { }
+        });
+        card.addView(dpiBar);
+        note("Raise this (120–160) if text and buttons look tiny on a phone screen.");
+
+        // ---- display number
+        rowLabel("Display");
+        final String[] displayNames = new String[9];
+        for (int i = 0; i < 9; i++) displayNames[i] = vncDisplayText(i + 1);
+        final TextView displayBtn = Ui.button(this, vncDisplayText(Prefs.vncDisplay(this)), Ui.SECONDARY);
+        displayBtn.setOnClickListener(v -> new Dlg(this).setTitle("Display number")
+                .setSingleChoiceItems(displayNames, Prefs.vncDisplay(this) - 1, (d, which) -> {
+                    sp.edit().putInt(Prefs.VNC_DISPLAY, which + 1).apply();
+                    displayBtn.setText(displayNames[which]);
+                    d.dismiss();
+                }).show());
+        card.addView(displayBtn);
+        note("The viewer connects to port 5900 plus the display number. Change it only if that port is already in use.");
+
+        // ---- behaviour
+        toggle("Only this phone can connect", Prefs.VNC_LOCAL, true);
+        note("On: use a viewer app on this phone (address 127.0.0.1). Off: other devices on your Wi-Fi or hotspot can "
+                + "connect too, still with the password.");
+        toggle("Allow several viewers at once", Prefs.VNC_SHARED, true);
+        toggle("Open a terminal when the desktop starts", Prefs.VNC_TERMINAL, true);
+        toggle("Share clipboard with the viewer", Prefs.VNC_CLIPBOARD, true);
+
+        // ---- password
+        section("Password");
+        note("The viewer asks for this. VNC only uses the first 8 characters, so it is 6 to 8 long.");
+        final TextView passView = rowLabel("");
+        passView.setTypeface(Typeface.MONOSPACE);
+        passView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17);
+        final boolean[] shown = {false};
+        final Runnable paint = () -> passView.setText(shown[0] ? Prefs.vncPassword(this)
+                : "••••••••");
+        paint.run();
+
+        final TextView showBtn = Ui.button(this, "Show", Ui.SECONDARY);
+        showBtn.setOnClickListener(v -> {
+            shown[0] = !shown[0];
+            showBtn.setText(shown[0] ? "Hide" : "Show");
+            paint.run();
+        });
+        card.addView(showBtn, topMargin(4));
+        TextView change = Ui.button(this, "Change password…", Ui.SECONDARY);
+        change.setOnClickListener(v -> {
+            final EditText e = new EditText(this);
+            e.setSingleLine(true);
+            e.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+            e.setTextColor(Ui.TEXT);
+            e.setTypeface(Typeface.MONOSPACE);
+            e.setText(Prefs.vncPassword(this));
+            Ui.tint(e);
+            LinearLayout wrap = new LinearLayout(this);
+            wrap.setPadding(Ui.dp(this, 20), Ui.dp(this, 8), Ui.dp(this, 20), 0);
+            wrap.addView(e, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            new Dlg(this).setTitle("VNC password").setView(wrap)
+                    .setPositiveButton("Save", (d, w) -> {
+                        String pw = e.getText().toString();
+                        if (pw.length() < 6 || pw.length() > 8 || pw.matches(".*\\s.*")) {
+                            Toast.makeText(this, "Use 6 to 8 characters, no spaces", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        sp.edit().putString(Prefs.VNC_PASSWORD, pw).apply();
+                        paint.run();
+                    })
+                    .setNegativeButton("Cancel", null).show();
+        });
+        card.addView(change, topMargin(8));
+        TextView regenerate = Ui.button(this, "Generate a new random password", Ui.SECONDARY);
+        regenerate.setOnClickListener(v -> new Dlg(this).setTitle("Generate a new password?")
+                .setMessage("Viewer apps with the old password saved will need the new one.")
+                .setPositiveButton("Generate", (d, w) -> {
+                    sp.edit().putString(Prefs.VNC_PASSWORD, Prefs.newVncPassword()).apply();
+                    paint.run();
+                })
+                .setNegativeButton("Cancel", null).show());
+        card.addView(regenerate, topMargin(8));
+
+        // ---- advanced
+        section("Advanced");
+        text("Extra server arguments", Prefs.VNC_EXTRA, "-ZlibLevel 1",
+                "Added to the Xtigervnc command line. Leave empty unless you know you need it.");
+    }
+
+    private void showVncPresets() {
+        android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
+        final int longEdge = Math.max(dm.widthPixels, dm.heightPixels);
+        final int shortEdge = Math.min(dm.widthPixels, dm.heightPixels);
+        final String[] names = {"This phone, landscape", "This phone, portrait", "1024 × 768", "1280 × 720",
+                "1600 × 900", "1920 × 1080"};
+        final int[][] sizes = {{longEdge, shortEdge}, {shortEdge, longEdge}, {1024, 768}, {1280, 720}, {1600, 900}, {1920, 1080}};
+        new Dlg(this).setTitle("Size presets")
+                .setItems(names, (d, which) -> setVncSize(sizes[which][0], sizes[which][1])).show();
+    }
+
+    /** Fits a size into the supported range (keeping its shape), snaps it to the slider step and saves it. */
+    private void setVncSize(int w, int h) {
+        double f = Math.min(1.0, Math.min(2560.0 / w, 1600.0 / h));
+        w = (int) Math.round(w * f);
+        h = (int) Math.round(h * f);
+        w = 640 + Math.round((Math.max(640, Math.min(2560, w)) - 640) / (float) VNC_STEP) * VNC_STEP;
+        h = 480 + Math.round((Math.max(480, Math.min(1600, h)) - 480) / (float) VNC_STEP) * VNC_STEP;
+        sp.edit().putInt(Prefs.VNC_W, w).putInt(Prefs.VNC_H, h).apply();
+        vncWLabel.setText(vncWText(w));
+        vncHLabel.setText(vncHText(h));
+        vncWBar.setProgress((w - 640) / VNC_STEP);
+        vncHBar.setProgress((h - 480) / VNC_STEP);
+    }
+
     private void buildCommandsSection() {
         section("Commands");
         SnippetStore.get().init(this);
@@ -555,7 +768,7 @@ public class SettingsActivity extends Activity {
                 .setPositiveButton("Reset", (d, w) -> { sp.edit().clear().apply(); recreate(); })
                 .setNegativeButton("Cancel", null).show());
         card.addView(reset);
-        note("NullShell 1.0");
+        note("NullShell 1.1");
         note("Open-source licenses: see THIRD_PARTY_NOTICES.md in the project.");
     }
 
@@ -681,7 +894,121 @@ public class SettingsActivity extends Activity {
 
     // ------------------------------------------------------------------ widgets
 
+    private TextView fontBtn, removeFontsBtn;
+
+    private void refreshFontRows() {
+        fontBtn.setText(TerminalFonts.currentLabel(this));
+        removeFontsBtn.setVisibility(TerminalFonts.installedCount(this) == 0 ? View.GONE : View.VISIBLE);
+        removeFontsBtn.setText("Remove downloaded fonts  ·  " + RootfsManager.formatBytes(TerminalFonts.installedBytes(this)));
+        updatePreview();
+    }
+
+    private void showFontPicker() {
+        final String[] items = new String[1 + TerminalFonts.ALL.size()];
+        items[0] = "System monospace  ·  no icons";
+        int checked = 0;
+        String cur = Prefs.termFont(this);
+        for (int i = 0; i < TerminalFonts.ALL.size(); i++) {
+            TerminalFonts.Font f = TerminalFonts.ALL.get(i);
+            boolean have = TerminalFonts.installed(this, f);
+            items[i + 1] = f.label + " Nerd Font  ·  " + (have ? "downloaded" : "download");
+            if (have && f.id.equals(cur)) checked = i + 1;
+        }
+        new Dlg(this).setTitle("Terminal font")
+                .setSingleChoiceItems(items, checked, (d, which) -> {
+                    d.dismiss();
+                    if (which == 0) {
+                        sp.edit().putString(Prefs.TERM_FONT, "").apply();
+                        refreshFontRows();
+                        return;
+                    }
+                    TerminalFonts.Font f = TerminalFonts.ALL.get(which - 1);
+                    if (TerminalFonts.installed(this, f)) {
+                        sp.edit().putString(Prefs.TERM_FONT, f.id).apply();
+                        refreshFontRows();
+                    } else {
+                        confirmDownload(f);
+                    }
+                }).show();
+    }
+
+    private void confirmDownload(final TerminalFonts.Font f) {
+        new Dlg(this).setTitle("Download " + f.label + " Nerd Font?")
+                .setMessage("This downloads the font from github.com/ryanoasis/nerd-fonts. The archive holds the whole "
+                        + "font family, so it can be a large download (use Wi-Fi if you can). Only the regular and bold "
+                        + "files are kept in the app.")
+                .setPositiveButton("Download", (d, w) -> downloadFont(f))
+                .setNegativeButton("Cancel", null).show();
+    }
+
+    private void downloadFont(final TerminalFonts.Font f) {
+        final boolean[] cancelled = {false};
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(Ui.dp(this, 22), Ui.dp(this, 10), Ui.dp(this, 22), Ui.dp(this, 4));
+        final TextView status = new TextView(this);
+        status.setTextColor(Ui.TEXT);
+        status.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        status.setText("Connecting…");
+        box.addView(status);
+        final ProgressBar bar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+        bar.setIndeterminate(true);
+        bar.setMax(1000);
+        LinearLayout.LayoutParams bp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        bp.topMargin = Ui.dp(this, 12);
+        box.addView(bar, bp);
+        final AlertDialog dlg = new Dlg(this).setTitle("Downloading " + f.label).setView(box).setCancelable(false)
+                .setNegativeButton("Cancel", (d, w) -> cancelled[0] = true).show();
+
+        final android.content.Context app = getApplicationContext();
+        new Thread(() -> {
+            try {
+                TerminalFonts.download(app, f, new TerminalFonts.Progress() {
+                    @Override public void onProgress(long done, long total) {
+                        main.post(() -> {
+                            if (total > 0) {
+                                bar.setIndeterminate(false);
+                                bar.setProgress((int) Math.min(1000, done * 1000 / total));
+                                status.setText(RootfsManager.formatBytes(done) + " of " + RootfsManager.formatBytes(total));
+                            } else {
+                                status.setText(RootfsManager.formatBytes(done) + " downloaded");
+                            }
+                        });
+                    }
+                    @Override public boolean cancelled() { return cancelled[0]; }
+                });
+                sp.edit().putString(Prefs.TERM_FONT, f.id).apply();
+                main.post(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    dlg.dismiss();
+                    refreshFontRows();
+                    Toast.makeText(this, f.label + " Nerd Font installed and selected", Toast.LENGTH_SHORT).show();
+                });
+            } catch (java.io.IOException e) {
+                main.post(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    dlg.dismiss();
+                    if (!cancelled[0]) Toast.makeText(this, "Font download failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+            }
+        }, "font-download").start();
+    }
+
+    private void confirmRemoveFonts() {
+        new Dlg(this).setTitle("Remove downloaded fonts?")
+                .setMessage("This deletes the downloaded Nerd Fonts (" + RootfsManager.formatBytes(TerminalFonts.installedBytes(this))
+                        + ") and switches the terminal back to the system monospace font.")
+                .setPositiveButton("Remove", (d, w) -> {
+                    TerminalFonts.removeAll(this);
+                    sp.edit().putString(Prefs.TERM_FONT, "").apply();
+                    refreshFontRows();
+                })
+                .setNegativeButton("Cancel", null).show();
+    }
+
     private void updatePreview() {
+        Typeface[] face = TerminalFonts.current(this);
+        preview.setTypeface(face == null ? Typeface.MONOSPACE : face[0]);
         preview.setTextColor(Prefs.schemeFg(this));
         preview.setBackground(Ui.rounded(this, Prefs.schemeBg(this), 8));
         preview.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.min(Prefs.fontSizeSp(this), 18));

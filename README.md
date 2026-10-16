@@ -19,6 +19,7 @@ NullShell runs a full Kali Linux userspace through [PRoot](https://proot-me.gith
 - A real Kali Linux userspace (ARM64), launched through PRoot — install packages with `apt`, run the tools you already know.
 - Background jobs run as a foreground service, so long commands keep going while you switch apps.
 - A pure-Java terminal fast path, scrollback limits and other memory controls so long sessions stay responsive on phones.
+- Nerd Fonts: download JetBrains Mono, Fira Code, Hack, Meslo, Caskaydia Cove, Ubuntu Mono or Sauce Code Pro (patched with icons for Starship, Powerlevel10k, eza, lsd and similar) from Settings > Terminal, with real bold.
 
 ### Code editor
 
@@ -90,6 +91,10 @@ NullShell runs a full Kali Linux userspace through [PRoot](https://proot-me.gith
 
 ### Networking
 - A Network screen to view and copy your device's IP and Wi-Fi gateway, and discover other devices on the same Wi-Fi network or your phone's hotspot.
+
+### VNC server
+- Start and stop a VNC server in Kali that shows an IceWM desktop, and connect to it from a separate VNC viewer app (for example bVNC or RealVNC Viewer). One-tap install and uninstall, a foreground notification with a Stop button, and an in-app log when something fails.
+- Settings for resolution (with presets, including your phone's own screen size), colour depth, scale (DPI), display number, password, localhost-only or network access, shared sessions, clipboard sharing, an auto-opened terminal, and extra server arguments. Software rendered, so there is no GPU acceleration.
 
 ## Building from source
 

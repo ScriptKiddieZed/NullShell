@@ -232,6 +232,8 @@ public class MainActivity extends Activity {
     @Override protected void onResume() {
         super.onResume();
         TermEmulator.setDefaultScrollback(Prefs.termScrollback(this));
+        android.graphics.Typeface[] face = TerminalFonts.current(this);
+        term.setFont(face == null ? null : face[0], face == null ? null : face[1]);
         term.applySettings(Prefs.fontSizeSp(this), Prefs.schemeFg(this), Prefs.schemeBg(this));
         if (Prefs.keepScreenOn(this)) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -393,9 +395,10 @@ public class MainActivity extends Activity {
         m.add(0, 9, 5, "Files");
         m.add(0, 11, 6, "AI chat");
         m.add(0, 10, 7, "Network");
-        m.add(0, 8, 8, "Memory");
-        m.add(0, 4, 9, installed ? "Reinstall Kali" : "Install Kali");
-        m.add(0, 5, 10, "Settings");
+        m.add(0, 12, 8, "VNC server");
+        m.add(0, 8, 9, "Memory");
+        m.add(0, 4, 10, installed ? "Reinstall Kali" : "Install Kali");
+        m.add(0, 5, 11, "Settings");
         pm.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case 1: startKali(); return true;
@@ -407,6 +410,7 @@ public class MainActivity extends Activity {
                 case 7: BrowserActivity.open(this, null); return true;
                 case 9: FileManagerActivity.open(this, null); return true;
                 case 10: startActivity(new Intent(this, NetworkActivity.class)); return true;
+                case 12: startActivity(new Intent(this, VncActivity.class)); return true;
                 case 11: startActivity(new Intent(this, ChatActivity.class)); return true;
                 case 8: MemoryReport.show(this, "Trim scrollback", () -> SessionManager.get().trimScrollback(500)); return true;
                 default: return false;

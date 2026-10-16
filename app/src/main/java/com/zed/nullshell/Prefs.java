@@ -20,6 +20,19 @@ public final class Prefs {
     public static final String WAKE_LOCK = "wake_lock";
     public static final String STARTUP_CMD = "startup_cmd";
     public static final String EXTRA_PROOT = "extra_proot";
+    public static final String VNC_W = "vnc_w";
+    public static final String VNC_H = "vnc_h";
+    public static final String VNC_DEPTH = "vnc_depth";
+    public static final String VNC_DPI = "vnc_dpi";
+    public static final String VNC_DISPLAY = "vnc_display";
+    public static final String VNC_LOCAL = "vnc_local";
+    public static final String VNC_SHARED = "vnc_shared";
+    public static final String VNC_TERMINAL = "vnc_terminal";
+    public static final String VNC_CLIPBOARD = "vnc_clipboard";
+    public static final String VNC_PASSWORD = "vnc_password";
+    public static final String VNC_EXTRA = "vnc_extra";
+    /** Colour depths the VNC server can be started with; VNC_DEPTH is an index into this. */
+    public static final int[] VNC_DEPTHS = {16, 24};
     public static final String EXTRA_KEYS = "extra_keys";
     public static final String AUTO_START = "auto_start";
     public static final String EDITOR_ENV = "editor_env";
@@ -36,6 +49,8 @@ public final class Prefs {
     public static final String ED_LSP_MEM = "ed_lsp_mem";
     public static final String ED_LARGE = "ed_large";
     public static final String TERM_SCROLLBACK = "term_scrollback";
+    /** Id of the downloaded Nerd Font used by the terminal (see TerminalFonts); empty = system monospace. */
+    public static final String TERM_FONT = "term_font";
     public static final String ED_LOADED = "ed_loaded";
     /** File sizes (KB) above which the editor switches to large-file mode; ED_LARGE is an index into this. */
     public static final int[] LARGE_KB = {128, 256, 512, 1024, 2048, 4096};
@@ -107,6 +122,41 @@ public final class Prefs {
     public static boolean wakeLock(Context c) { return sp(c).getBoolean(WAKE_LOCK, true); }
     public static String startupCmd(Context c) { return sp(c).getString(STARTUP_CMD, "").trim(); }
     public static String extraProot(Context c) { return sp(c).getString(EXTRA_PROOT, "").trim(); }
+
+    public static String termFont(Context c) { return sp(c).getString(TERM_FONT, ""); }
+
+    public static int vncWidth(Context c) { return clamp(sp(c).getInt(VNC_W, 1280), 640, 2560); }
+    public static int vncHeight(Context c) { return clamp(sp(c).getInt(VNC_H, 720), 480, 1600); }
+    public static int vncDepthIndex(Context c) { return clamp(sp(c).getInt(VNC_DEPTH, 1), 0, VNC_DEPTHS.length - 1); }
+    public static int vncDepth(Context c) { return VNC_DEPTHS[vncDepthIndex(c)]; }
+    public static int vncDpi(Context c) { return clamp(sp(c).getInt(VNC_DPI, 96), 72, 240); }
+    /** X display number; the VNC port is 5900 plus this. */
+    public static int vncDisplay(Context c) { return clamp(sp(c).getInt(VNC_DISPLAY, 1), 1, 9); }
+    /** True (default): only this phone can connect, i.e. a viewer app on the phone itself. */
+    public static boolean vncLocalOnly(Context c) { return sp(c).getBoolean(VNC_LOCAL, true); }
+    public static boolean vncShared(Context c) { return sp(c).getBoolean(VNC_SHARED, true); }
+    public static boolean vncTerminal(Context c) { return sp(c).getBoolean(VNC_TERMINAL, true); }
+    public static boolean vncClipboard(Context c) { return sp(c).getBoolean(VNC_CLIPBOARD, true); }
+    public static String vncExtra(Context c) { return sp(c).getString(VNC_EXTRA, "").trim(); }
+
+    /** The VNC password. VNC authentication only uses the first 8 characters, so it is exactly 8 when generated.
+     *  Created on first use and kept in app-private prefs. */
+    public static String vncPassword(Context c) {
+        String p = sp(c).getString(VNC_PASSWORD, null);
+        if (p == null || p.length() < 6 || p.length() > 8) {
+            p = newVncPassword();
+            sp(c).edit().putString(VNC_PASSWORD, p).apply();
+        }
+        return p;
+    }
+
+    public static String newVncPassword() {
+        final String alphabet = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";   // no look-alikes
+        java.security.SecureRandom r = new java.security.SecureRandom();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 8; i++) sb.append(alphabet.charAt(r.nextInt(alphabet.length())));
+        return sb.toString();
+    }
 
     private static int clamp(int v, int lo, int hi) { return Math.max(lo, Math.min(hi, v)); }
     private static String nonEmpty(String s, String def) {
