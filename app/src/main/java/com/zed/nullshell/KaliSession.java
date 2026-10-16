@@ -67,7 +67,24 @@ public final class KaliSession {
     public boolean isConsole() { return id == 0; }
     public boolean isAlive() { Process p = proc; return p != null && p.isAlive(); }
     public boolean isEnded() { return started && !isAlive(); }
-    public String title() { return isConsole() ? "Console" : "Kali " + id; }
+    private volatile String customName = "";
+
+    /** The shown name: the one the user gave it, else "Kali N". The console keeps its fixed name. */
+    public String title() {
+        if (isConsole()) return "Console";
+        String n = customName;
+        return n.isEmpty() ? "Kali " + id : n;
+    }
+
+    /** Renames the session; an empty name goes back to "Kali N". Names live as long as the session. */
+    public void setName(String name) {
+        if (isConsole()) return;
+        String n = name == null ? "" : name.replaceAll("\\p{Cntrl}", " ").trim();
+        if (n.length() > 32) n = n.substring(0, 32).trim();
+        customName = n;
+    }
+
+    public boolean isRenamed() { return !customName.isEmpty(); }
     public void setListener(Listener l) { listener = l; }
 
     // ------------------------------------------------------------------ logging into the terminal

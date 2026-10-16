@@ -5,11 +5,15 @@
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="46dp"
         android:orientation="horizontal" android:gravity="center_vertical" android:paddingStart="6dp">
-        <HorizontalScrollView android:id="@+id/tabscroll" android:layout_width="0dp" android:layout_height="match_parent"
-            android:layout_weight="1" android:scrollbars="none" android:overScrollMode="never">
-            <LinearLayout android:id="@+id/tabbar" android:layout_width="wrap_content" android:layout_height="match_parent"
-                android:orientation="horizontal" android:gravity="center_vertical"/>
-        </HorizontalScrollView>
+        <FrameLayout android:id="@+id/btn_sessions_slot" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <LinearLayout android:id="@+id/title_box" android:layout_width="0dp" android:layout_height="match_parent"
+            android:layout_weight="1" android:orientation="vertical" android:gravity="center_vertical"
+            android:paddingStart="4dp" android:paddingEnd="8dp" android:clickable="true">
+            <TextView android:id="@+id/session_title" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:singleLine="true" android:ellipsize="end" android:textSize="16sp"/>
+            <TextView android:id="@+id/session_sub" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:singleLine="true" android:ellipsize="end" android:textSize="12sp"/>
+        </LinearLayout>
         <FrameLayout android:id="@+id/btn_cmds_slot" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
         <FrameLayout android:id="@+id/btn_new_slot" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
         <FrameLayout android:id="@+id/btn_menu_slot" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
@@ -36,6 +40,8 @@
             android:background="#99000000" android:visibility="gone"/>
         <FrameLayout android:id="@+id/drawer_slot" android:layout_width="300dp" android:layout_height="match_parent"
             android:layout_gravity="end" android:visibility="gone"/>
+        <FrameLayout android:id="@+id/sessions_slot" android:layout_width="280dp" android:layout_height="match_parent"
+            android:layout_gravity="start" android:visibility="gone"/>
     </FrameLayout>
 
     <View android:id="@+id/keys_divider" android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line"/>

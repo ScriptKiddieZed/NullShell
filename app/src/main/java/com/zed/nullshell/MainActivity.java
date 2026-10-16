@@ -83,8 +83,14 @@ public class MainActivity extends Activity {
     private LinearLayout keysRow;
 
     private TerminalView term;
-    private LinearLayout tabBar, empty, busyStrip;
-    private HorizontalScrollView tabScroll, keysScroll;
+    // sessions drawer (left)
+    private SessionsPanel sessionsPanel;
+    private FrameLayout sessionsSlot;
+    private boolean sessionsOpen;
+    private TextView titleView, subView;
+
+    private LinearLayout empty, busyStrip;
+    private HorizontalScrollView keysScroll;
     private View keysDivider;
     private TextView busyText, btnMenu;
     private ProgressBar busyBar;
@@ -121,8 +127,24 @@ public class MainActivity extends Activity {
         Ui.applyInsets(findViewById(R.id.root));
 
         term = findViewById(R.id.terminal);
-        tabBar = findViewById(R.id.tabbar);
-        tabScroll = findViewById(R.id.tabscroll);
+        titleView = findViewById(R.id.session_title);
+        subView = findViewById(R.id.session_sub);
+        titleView.setTextColor(Ui.TEXT);
+        titleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+        subView.setTextColor(Ui.DIM);
+        View titleBox = findViewById(R.id.title_box);
+        titleBox.setBackground(Ui.ripple(this, 0, 10));
+        titleBox.setOnClickListener(v -> { if (sessionsOpen) closeSessions(); else openSessions(); });
+        titleBox.setOnLongClickListener(v -> {
+            KaliSession a = manager.active();
+            if (a.isConsole()) return false;
+            renameSession(a);
+            return true;
+        });
+
+        TextView btnSessions = Ui.iconButton(this, "\u2630");
+        btnSessions.setOnClickListener(v -> { if (sessionsOpen) closeSessions(); else openSessions(); });
+        ((ViewGroup) findViewById(R.id.btn_sessions_slot)).addView(btnSessions);
         empty = findViewById(R.id.empty);
         busyStrip = findViewById(R.id.busy);
         busyText = findViewById(R.id.busy_text);
@@ -152,6 +174,7 @@ public class MainActivity extends Activity {
         buildExtraKeys();
         buildEmptyState();
         buildDrawer();
+        buildSessionsDrawer();
 
         term.setModifierListener((ctrl, alt) -> main.post(() -> {
             Ui.setKeyActive(this, ctrlKey, ctrl);
@@ -242,12 +265,14 @@ public class MainActivity extends Activity {
         keysDivider.setVisibility(vis);
         buildExtraKeys();
         if (drawerOpen) drawer.refresh();
+        if (sessionsOpen) sessionsPanel.refresh(manager.all(), manager.active());
         main.removeCallbacks(busyPoll);
         busyPoll.run();
     }
 
     @Override public void onBackPressed() {
         if (drawerOpen) closeDrawer();
+        else if (sessionsOpen) closeSessions();
         else super.onBackPressed();
     }
 
@@ -280,7 +305,8 @@ public class MainActivity extends Activity {
     private void refreshUi() {
         KaliSession active = manager.active();
         if (term.getSession() != active) term.attach(active);
-        rebuildTabs(active);
+        updateTitle(active);
+        if (sessionsOpen) sessionsPanel.refresh(manager.all(), active);
 
         boolean busy = busy();
         busyStrip.setVisibility(busy || macroRunning ? View.VISIBLE : View.GONE);
@@ -322,52 +348,47 @@ public class MainActivity extends Activity {
         }
     }
 
-    // ------------------------------------------------------------------ tabs
+    // ------------------------------------------------------------------ sessions
 
-    private void rebuildTabs(KaliSession active) {
-        tabBar.removeAllViews();
-        boolean onlyConsole = manager.all().size() == 1;
-        View activeTab = null;
-        for (KaliSession s : manager.all()) {
-            // the console is only a tab while it matters: selected, or the only thing there is
-            if (s.isConsole() && s != active && !onlyConsole) continue;
-            View t = makeTab(s, s == active);
-            tabBar.addView(t);
-            if (s == active) activeTab = t;
-        }
-        final View target = activeTab;
-        if (target != null) tabScroll.post(() -> tabScroll.smoothScrollTo(Math.max(0, target.getLeft() - Ui.dp(this, 24)), 0));
+    /** The top bar shows the name and state of the selected session. */
+    private void updateTitle(KaliSession active) {
+        titleView.setText(active.title());
+        int n = 0;
+        for (KaliSession k : manager.all()) if (!k.isConsole()) n++;
+        String state = SessionsPanel.state(active);
+        subView.setText(n > 1 ? state + " \u00B7 " + n + " sessions" : state);
     }
 
-    private View makeTab(KaliSession s, boolean isActive) {
-        LinearLayout tab = new LinearLayout(this);
-        tab.setOrientation(LinearLayout.HORIZONTAL);
-        tab.setGravity(Gravity.CENTER_VERTICAL);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Ui.dp(this, 34));
-        lp.setMargins(0, 0, Ui.dp(this, 4), 0);
-        tab.setLayoutParams(lp);
-        tab.setBackground(Ui.ripple(this, isActive ? Ui.SURFACE2 : 0, 10));
-        tab.setOnClickListener(v -> manager.select(s));
-
-        TextView label = new TextView(this);
-        label.setText(s.title());
-        label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
-        label.setTextColor(isActive && !s.isEnded() ? Ui.TEXT : Ui.DIM);
-        label.setTypeface(Typeface.create("sans-serif-medium", s.isEnded() ? Typeface.ITALIC : Typeface.NORMAL));
-        label.setPadding(Ui.dp(this, 12), 0, s.isConsole() || !isActive ? Ui.dp(this, 12) : Ui.dp(this, 4), 0);
-        tab.addView(label);
-
-        if (isActive && !s.isConsole()) {            // only the selected tab shows its close button
-            TextView close = new TextView(this);
-            close.setText("\u00D7");
-            close.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-            close.setTextColor(Ui.DIM);
-            close.setGravity(Gravity.CENTER);
-            close.setPadding(Ui.dp(this, 6), 0, Ui.dp(this, 10), 0);
-            close.setOnClickListener(v -> closeTab(s));
-            tab.addView(close);
-        }
-        return tab;
+    private void renameSession(KaliSession s) {
+        if (s.isConsole()) return;
+        final android.widget.EditText input = new android.widget.EditText(this);
+        input.setSingleLine(true);
+        input.setFilters(new android.text.InputFilter[]{new android.text.InputFilter.LengthFilter(32)});
+        input.setHint("Kali " + s.id);
+        input.setText(s.isRenamed() ? s.title() : "");
+        input.setSelection(input.getText().length());
+        input.setTextColor(Ui.TEXT);
+        input.setHintTextColor(Ui.DIM);
+        input.setImeOptions(android.view.inputmethod.EditorInfo.IME_ACTION_DONE);
+        FrameLayout box = new FrameLayout(this);
+        int pad = Ui.dp(this, 20);
+        box.setPadding(pad, Ui.dp(this, 8), pad, 0);
+        box.addView(input, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        AlertDialog.Builder d = new Dlg(this).setTitle("Rename session");
+        d.setView(box);
+        d.setPositiveButton("Rename", (x, w) -> { s.setName(input.getText().toString()); refreshUi(); manager.notifyService(); });
+        if (s.isRenamed()) d.setNeutralButton("Reset", (x, w) -> { s.setName(""); refreshUi(); manager.notifyService(); });
+        d.setNegativeButton("Cancel", null);
+        AlertDialog shown = d.show();
+        input.setOnEditorActionListener((v, id, e) -> {
+            s.setName(input.getText().toString());
+            refreshUi();
+            manager.notifyService();
+            shown.dismiss();
+            return true;
+        });
+        input.requestFocus();
+        if (shown.getWindow() != null) shown.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
     private void closeTab(KaliSession s) {
@@ -587,7 +608,7 @@ public class MainActivity extends Activity {
         scrim = findViewById(R.id.scrim);
         drawerSlot = findViewById(R.id.drawer_slot);
         drawerSlot.setElevation(Ui.dp(this, 8));
-        scrim.setOnClickListener(v -> closeDrawer());
+        scrim.setOnClickListener(v -> { closeDrawer(); closeSessions(); });
         drawer = new DrawerPanel(this, new DrawerPanel.Host() {
             @Override public void onTap(Snippet s) { closeDrawer(); useSnippet(s); }
             @Override public void onInsert(Snippet s) {
@@ -608,15 +629,68 @@ public class MainActivity extends Activity {
         startActivity(i);
     }
 
+    private void buildSessionsDrawer() {
+        sessionsSlot = findViewById(R.id.sessions_slot);
+        sessionsSlot.setElevation(Ui.dp(this, 8));
+        sessionsPanel = new SessionsPanel(this, new SessionsPanel.Host() {
+            @Override public void onSelect(KaliSession s) { manager.select(s); closeSessions(); term.requestFocus(); }
+            @Override public void onRename(KaliSession s) { renameSession(s); }
+            @Override public void onClose(KaliSession s) { closeTab(s); }
+            @Override public void onNew() { closeSessions(); startKali(); }
+        });
+        sessionsSlot.addView(sessionsPanel, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    private void openSessions() {
+        if (drawerOpen) {                                   // only one drawer at a time
+            drawerOpen = false;
+            drawerSlot.animate().cancel();
+            drawerSlot.setVisibility(View.GONE);
+        }
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) imm.hideSoftInputFromWindow(term.getWindowToken(), 0);
+        sessionsPanel.refresh(manager.all(), manager.active());
+        sessionsOpen = true;
+        showScrim();
+        sessionsSlot.animate().cancel();
+        sessionsSlot.setTranslationX(-Ui.dp(this, 280));
+        sessionsSlot.setVisibility(View.VISIBLE);
+        sessionsSlot.animate().translationX(0f).setDuration(180);
+    }
+
+    private void closeSessions() {
+        if (!sessionsOpen) return;
+        sessionsOpen = false;
+        hideScrim();
+        sessionsSlot.animate().translationX(-Ui.dp(this, 280)).setDuration(160)
+                .withEndAction(() -> { if (!sessionsOpen) sessionsSlot.setVisibility(View.GONE); });
+    }
+
+    private void showScrim() {
+        scrim.animate().cancel();
+        if (scrim.getVisibility() != View.VISIBLE) scrim.setAlpha(0f);
+        scrim.setVisibility(View.VISIBLE);
+        scrim.animate().alpha(1f).setDuration(150);
+    }
+
+    private void hideScrim() {
+        scrim.animate().alpha(0f).setDuration(150)
+                .withEndAction(() -> { if (!drawerOpen && !sessionsOpen) scrim.setVisibility(View.GONE); });
+    }
+
     private void openDrawer() {
+        if (sessionsOpen) {
+            sessionsOpen = false;
+            sessionsSlot.animate().cancel();
+            sessionsSlot.setVisibility(View.GONE);
+        }
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) imm.hideSoftInputFromWindow(term.getWindowToken(), 0);
         drawer.clearSearch();
         drawer.refresh();
         drawerOpen = true;
-        scrim.setAlpha(0f);
-        scrim.setVisibility(View.VISIBLE);
-        scrim.animate().alpha(1f).setDuration(150);
+        showScrim();
+        drawerSlot.animate().cancel();
         drawerSlot.setTranslationX(Ui.dp(this, 300));
         drawerSlot.setVisibility(View.VISIBLE);
         drawerSlot.animate().translationX(0f).setDuration(180);
@@ -625,9 +699,9 @@ public class MainActivity extends Activity {
     private void closeDrawer() {
         if (!drawerOpen) return;
         drawerOpen = false;
-        scrim.animate().alpha(0f).setDuration(150).withEndAction(() -> scrim.setVisibility(View.GONE));
+        hideScrim();
         drawerSlot.animate().translationX(Ui.dp(this, 300)).setDuration(160)
-                .withEndAction(() -> drawerSlot.setVisibility(View.GONE));
+                .withEndAction(() -> { if (!drawerOpen) drawerSlot.setVisibility(View.GONE); });
     }
 
     // ------------------------------------------------------------------ using a snippet

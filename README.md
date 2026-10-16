@@ -19,6 +19,7 @@ NullShell runs a full Kali Linux userspace through [PRoot](https://proot-me.gith
 - A real Kali Linux userspace (ARM64), launched through PRoot — install packages with `apt`, run the tools you already know.
 - Background jobs run as a foreground service, so long commands keep going while you switch apps.
 - A pure-Java terminal fast path, scrollback limits and other memory controls so long sessions stay responsive on phones.
+- Sessions live in a left-hand drawer (the ☰ button or a tap on the title); rename a session with the pencil or a long-press, and the top bar shows the current session's name and state.
 - Nerd Fonts: download JetBrains Mono, Fira Code, Hack, Meslo, Caskaydia Cove, Ubuntu Mono or Sauce Code Pro (patched with icons for Starship, Powerlevel10k, eza, lsd and similar) from Settings > Terminal, with real bold.
 
 ### Code editor
