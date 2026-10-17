@@ -41,7 +41,7 @@ Requirements: an ARM64 device running Android 8.0 (API 26) or newer.
 <details>
   <summary>📱 Click to view screenshot</summary>
   <br>
-  <img src="Docs/terminal.jpg" height="500" />
+  <img src="Docs/1.png" height="500" />
 </details>
 
 - A real Kali Linux userspace (ARM64), launched through PRoot — install packages with `apt`, run the tools you already know.
@@ -55,7 +55,7 @@ Requirements: an ARM64 device running Android 8.0 (API 26) or newer.
 <details>
   <summary>📱 Click to view screenshot</summary>
   <br>
-  <img src="Docs/code_editor.jpg" height="500" />
+  <img src="Docs/2.png" height="500" />
 </details>
 
 - Built on [sora-editor](https://github.com/Rosemoe/sora-editor), with TextMate-grammar syntax highlighting and Language Server Protocol support.
@@ -69,7 +69,7 @@ Requirements: an ARM64 device running Android 8.0 (API 26) or newer.
 <details>
   <summary>📱 Click to view screenshot</summary>
   <br>
-  <img src="Docs/browser.jpg" height="500" />
+  <img src="Docs/3.png" height="500" />
 </details>
 
 - Tabbed WebView browser with history, and app-private CA-certificate trust so you can point it at your own intercepting proxy (mitmproxy, Caido, Burp, etc.) without touching the system trust store.
@@ -80,7 +80,7 @@ Requirements: an ARM64 device running Android 8.0 (API 26) or newer.
 <details>
   <summary>📱 Click to view screenshot</summary>
   <br>
-  <img src="Docs/command_snippets.jpg" height="500" />
+  <img src="Docs/5.png" height="500" />
 </details>
 
 - Save frequently used shell commands as reusable, named snippets with a one-tap run dialog.
@@ -91,7 +91,7 @@ Requirements: an ARM64 device running Android 8.0 (API 26) or newer.
 <details>
   <summary>📱 Click to view screenshot</summary>
   <br>
-  <img src="Docs/file_manager.jpg" height="500" />
+  <img src="Docs/4.png" height="500" />
 </details>
 
 - A native file manager (browse, move, copy, rename, delete, open-with) covering both the app's own storage and the Kali rootfs.
@@ -101,7 +101,7 @@ Requirements: an ARM64 device running Android 8.0 (API 26) or newer.
 <details>
   <summary>📱 Click to view screenshot</summary>
   <br>
-  <img src="Docs/ai_chat.jpg" height="500" />
+  <img src="Docs/6.png" height="500" />
 </details>
 
 - An in-app assistant powered by the Gemini API: multiple assistants with their own system prompts, streamed responses, model picker, file attachments, and saved conversations.
@@ -109,12 +109,6 @@ Requirements: an ARM64 device running Android 8.0 (API 26) or newer.
 - Paste a shell code block straight from a chat into the terminal, or export a conversation as Markdown.
 
 ### Appearance
-
-<details>
-  <summary>📱 Click to view screenshot</summary>
-  <br>
-  <img src="Docs/appearance.jpg" height="500" />
-</details>
 
 - 16 built-in themes covering the terminal, editor and UI, each with its own matching launcher icon (with an optional "match theme" switch), adjustable accent colour and corner roundness, and automatic day/night switching.
 

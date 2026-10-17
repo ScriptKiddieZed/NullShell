@@ -1,0 +1,15 @@
+NullShell brings a comprehensive security research and development workspace to your Android device without requiring root access. By leveraging a native bundled PRoot runtime environment, it deploys a functional Kali Linux userspace directly within the application sandbox.
+
+Key Features:
+
+* Advanced Terminal: A high-performance Java terminal fast path featuring foreground service support for long-running processes, session management, and Nerd Fonts integration for custom shell prompts.
+
+* Modern Code Editor: Built on sora-editor, offering TextMate syntax highlighting and Language Server Protocol diagnostics for Python, C, C++, Rust, and web technologies.
+
+* Intercepting Web Browser: A tabbed interface with isolated application-private CA certificate settings, allowing you to route traffic to local intercepting tools like Caido or mitmproxy without polluting your system trust store.
+
+* Graphical Desktop: Start an integrated IceWM VNC server to interact with GUI applications and file managers natively.
+
+* AI Workspace Assistant: An embedded engineering companion interface powered by the Gemini API to help stream code blocks and manage development scripts.
+
+Requirements: An ARM64 device running Android 8.0 (API 26) or newer. Use NullShell responsibly for authorized testing and educational purposes.

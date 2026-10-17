@@ -1,0 +1,1 @@
+Rootless Kali Linux terminal, code editor, and AI assistant on Android.
