@@ -1,0 +1,7 @@
+/* XPM */
+static char * dframeIL_xpm[] = {
+"2 1 3 1",
+" 	c None",
+".	c #B8B8B8",
+"+	c #E3E3E1",
+".+"};

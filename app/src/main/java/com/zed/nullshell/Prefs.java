@@ -31,6 +31,9 @@ public final class Prefs {
     public static final String VNC_CLIPBOARD = "vnc_clipboard";
     public static final String VNC_PASSWORD = "vnc_password";
     public static final String VNC_EXTRA = "vnc_extra";
+    public static final String VNC_THEME = "vnc_theme";
+    public static final String VNC_UISIZE = "vnc_uisize";
+    public static final String VNC_KEEPCFG = "vnc_keepcfg";
     /** Colour depths the VNC server can be started with; VNC_DEPTH is an index into this. */
     public static final int[] VNC_DEPTHS = {16, 24};
     public static final String EXTRA_KEYS = "extra_keys";
@@ -137,6 +140,12 @@ public final class Prefs {
     public static boolean vncShared(Context c) { return sp(c).getBoolean(VNC_SHARED, true); }
     public static boolean vncTerminal(Context c) { return sp(c).getBoolean(VNC_TERMINAL, true); }
     public static boolean vncClipboard(Context c) { return sp(c).getBoolean(VNC_CLIPBOARD, true); }
+    /** IceWM theme folder name (a downloaded or bundled theme); empty for IceWM's own default. Nord by default. */
+    public static String vncTheme(Context c) { return sp(c).getString(VNC_THEME, "Nord"); }
+    /** 0 normal, 1 large, 2 extra large: fonts, title bars and taskbar. */
+    public static int vncUiSize(Context c) { return clamp(sp(c).getInt(VNC_UISIZE, 1), 0, 2); }
+    /** When on, the app writes ~/.icewm only if it does not exist yet. */
+    public static boolean vncKeepConfig(Context c) { return sp(c).getBoolean(VNC_KEEPCFG, false); }
     public static String vncExtra(Context c) { return sp(c).getString(VNC_EXTRA, "").trim(); }
 
     /** The VNC password. VNC authentication only uses the first 8 characters, so it is exactly 8 when generated.

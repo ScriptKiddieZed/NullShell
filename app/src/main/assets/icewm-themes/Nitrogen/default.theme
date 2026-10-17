@@ -1,0 +1,106 @@
+ThemeDescription              = "Nitrogen is an IceWM theme inspired by the KDE Oxygen theme"
+ThemeAuthor                   = "jcsl and Marcus Moeller"
+
+Look                          = flat
+RolloverButtonsSupported      = 1
+Gradients                     = "buttonA.xpm buttonI.xpm dialogbg.xpm logoutbg.xpm switchbg.xpm menubg.xpm menusel.xpm menusep.xpm taskbuttonactive.xpm taskbarbg.xpm taskbuttonbg.xpm taskbuttonminimized.xpm toolbuttonbg.xpm workspacebuttonbg.xpm workspacebuttonactive.xpm titleAB.xpm titleAS.xpm titleAT.xpm titleIB.xpm titleIS.xpm titleIT.xpm"
+SmallIconSize                 = 16
+BorderSizeX                   = 2
+BorderSizeY                   = 2
+CornerSizeX                   = 9
+CornerSizeY                   = 9
+DlgBorderSizeX                = 2
+DlgBorderSizeY                = 2
+
+################################################## Titlebar
+
+ShowMenuButtonIcon            = 1
+TitleBarCentered              = 1
+TitleBarJustify               = 50
+TitleBarHeight                = 18
+TitleFontNameXft              = "sans-serif:size=9:bold"
+TitleButtonsLeft              = "s"
+TitleButtonsRight             = "xmi"
+TitleButtonsSupported         = "sxim"
+ColorNormalTitleButton        = "#E0DFDF"                   # Background of titlebar buttons
+ColorActiveTitleBarText       = "#141312"                   # Activa
+ColorNormalTitleBarText       = "#8d8c8b"                   # Inactiva
+ColorActiveTitleBarShadow     = "#efefee"
+ColorNormalTitleBarShadow     = "#efefee"
+
+################################################## Desktop
+
+DesktopBackgroundColor         = "#000000"
+
+################################################## Taskbar
+
+TaskBarAtTop                  = 0
+TaskBarClockLeds              = 0
+TrayDrawBevel                 = 0
+TrayShowAllWindows            = 1
+TaskBarShowCollapseButton     = 1
+ColorNormalTaskBarAppText     = "#000000"
+ColorMinimizedTaskBarAppText  = "#000000"
+ActiveTaskBarFontNameXft      = "sans-serif:size=10"
+NormalTaskBarFontNameXft      = "sans-serif:size=10"
+
+################################################## Menu
+
+ColorNormalMenu               = "#E0DFDF"
+ColorActiveMenuItem           = "#c5c3c1"
+ColorNormalMenuItemText       = "#231F1C"
+ColorDisabledMenuItemText     = "#c2bfbd"
+MenuFontNameXft               = "sans-serif:size=10"
+ShowSettingsMenu              = 1                           # Show settings submenu
+ShowFocusModeMenu             = 0                           # Show focus mode submenu
+ShowThemesMenu                = 1                           # Show themes submenu
+ShowHelp                      = 0                           # Show the help menu item
+ShowLogoutMenu                = 1                           # Show logout submenu
+ShowLogoutSubMenu             = 1                           # Show logout submenu
+ShowWindowList                = 0                           # Show the window menu item
+
+################################################## ToolTips
+
+ColorToolTip                  = "#C0DAFF"
+ColorToolTipText              = "#141312"
+ToolTipFontNameXft            = "sans:size=9"
+
+################################################## Clock
+
+ColorClock                    = ""
+ColorClockText                = "#000000"
+ClockFontNameXft              = "arial:size=16"
+
+################################################## Otros fondos
+
+ColorLabel                    = "#E0DFDF"
+ColorDialog                   = "#E0DFDF"
+
+################################################## QuickSwitch (cambiador de tareas)
+
+ColorQuickSwitch              = "#E0DFDF"
+ColorQuickSwitchText          = "#000000"
+QuickSwitchFontNameXft        = "sans-serif:size=10"
+QuickSwitchSmallWindow        = 1
+ColorQuickSwitchActive        = "#c5c3c1"
+QuickSwitchFillSelection      = 0
+
+################################################## Scrollbar
+
+ScrollBarX                    = 17                          # Scrollbar width
+ScrollBarY                    = 17                          # Scrollbar (button) height
+ColorScrollBar                = "#c3c1bf"                   # Scrollbar background (sliding area)
+ColorScrollBarSlider          = "#e3e2e1"                   # Background of the slider button in scrollbars
+ColorScrollBarButton          = "#E0DFDF"                   # Background of the arrow buttons in scrollbars
+
+################################################## ListBox (lista de ventanas)
+
+ColorListBox                  = "#E0DFDF"                   # Background of listboxes
+ColorListBoxSelection         = "#c5c3c1"                   # Background of selected listbox items
+ListBoxFontNameXft            = "sans-serif:size=10"
+
+################################################## Button
+
+ActiveButtonFontNameXft         = "sans:size=10:bold"
+NormalButtonFontNameXft         = "sans:size=10"
+

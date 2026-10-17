@@ -27,7 +27,9 @@ final class VncManager {
     /** Everything the desktop needs. tigervnc-tools is where vncpasswd lives; xfonts-base provides the "fixed" font
      *  without which Xtigervnc refuses to start at all; x11-xkb-utils provides xkbcomp, which it also needs. */
     static final String PACKAGES = "icewm xterm tigervnc-standalone-server tigervnc-common tigervnc-tools"
-            + " xfonts-base fonts-dejavu-core x11-xserver-utils x11-xkb-utils xkb-data dbus-x11";
+            + " xfonts-base fonts-dejavu-core x11-xserver-utils x11-xkb-utils xkb-data dbus-x11"
+            // GTK file managers (Thunar, PCManFM) need the mime database and an icon theme with SVG support
+            + " shared-mime-info adwaita-icon-theme librsvg2-common";
 
     /** Only what this feature added at the top level; shared libraries/fonts go via autoremove, and xterm, xkb-data,
      *  dbus-x11 are left alone because other things commonly depend on them. */
@@ -60,6 +62,27 @@ final class VncManager {
     }
 
     static boolean isInstalled(Context ctx) { return missing(ctx).isEmpty(); }
+
+    /**
+     * Packages that GTK file managers (Thunar, PCManFM) need but that earlier installs did not add: the mime database
+     * and an icon theme with SVG support. Not required to start the desktop, so this does not block Start.
+     */
+    /** dpkg names a package's file list "pkg.list", or "pkg:arm64.list" for packages that are built per architecture. */
+    private static boolean dpkgHas(File info, String pkg) {
+        if (new File(info, pkg + ".list").isFile()) return true;
+        String[] names = info.list();
+        if (names != null) for (String n : names) if (n.startsWith(pkg + ":") && n.endsWith(".list")) return true;
+        return false;
+    }
+
+    static String extrasMissing(Context ctx) {
+        File rootfs = RootfsManager.dir(ctx);
+        List<String> m = new ArrayList<>();
+        File info = new File(rootfs, "var/lib/dpkg/info");
+        for (String p : new String[]{"shared-mime-info", "adwaita-icon-theme", "librsvg2-common"})
+            if (!dpkgHas(info, p)) m.add(p);
+        return String.join(", ", m);
+    }
 
     /** True when at least some of the desktop is installed (so Uninstall still makes sense for a half install). */
     static boolean anyInstalled(Context ctx) {
@@ -179,6 +202,24 @@ final class VncManager {
     private static final java.util.Set<String> DESKTOP_PROCS = new java.util.HashSet<>(Arrays.asList(
             "Xtigervnc", "Xvnc", "icewm-session", "icewm", "icewmbg", "icewmtray", "vncconfig"));
 
+    /** Set in the start script's environment: every process the desktop starts inherits it, however it is renamed. */
+    private static final String ENV_MARK = "NS_VNC=1";
+
+    /** True when the process's environment carries {@link #ENV_MARK} (needs the same uid; guest processes have it). */
+    private static boolean hasMark(File procDir) {
+        try {
+            byte[] env = java.nio.file.Files.readAllBytes(new File(procDir, "environ").toPath());
+            byte[] mark = ENV_MARK.getBytes(StandardCharsets.UTF_8);
+            outer:
+            for (int i = 0; i + mark.length <= env.length; i++) {
+                if (i > 0 && env[i - 1] != 0) continue;            // must start a variable
+                for (int j = 0; j < mark.length; j++) if (env[i + j] != mark[j]) continue outer;
+                if (i + mark.length == env.length || env[i + mark.length] == 0) return true;
+            }
+        } catch (Exception ignored) { }
+        return false;
+    }
+
     /**
      * Kills leftover desktop processes by reading /proc directly. The guest's pkill -x cannot be trusted: under PRoot
      * a process's comm is often the loader's name rather than the program's, so matching by name finds nothing.
@@ -199,8 +240,12 @@ final class VncManager {
                 while (end < raw.length && raw[end] != 0) end++;
                 String argv0 = new String(raw, 0, end, StandardCharsets.UTF_8);
                 String base = argv0.substring(argv0.lastIndexOf('/') + 1);
-                if (DESKTOP_PROCS.contains(base)) android.os.Process.killProcess(pid);
+                if (DESKTOP_PROCS.contains(base)) { android.os.Process.killProcess(pid); continue; }
             } catch (Exception ignored) { }   // not ours, or already gone
+            // Everything else the desktop started (apps launched from it leave helpers behind: dbus, gvfs, at-spi, ...)
+            // carries the marker from the start script. Without this, such a helper keeps PRoot alive and the app thinks
+            // it still runs.
+            if (hasMark(d)) android.os.Process.killProcess(pid);
         }
     }
 
@@ -222,7 +267,15 @@ final class VncManager {
         if (!extra.isEmpty()) args.append(' ').append(extra);
 
         StringBuilder s = new StringBuilder();
-        s.append("export HOME=/root DISPLAY=:").append(d).append("\n");
+        s.append("export HOME=/root DISPLAY=:").append(d).append(" ").append(ENV_MARK).append("\n");
+        // when the server ends for any reason, take everything the desktop started with it, or PRoot never exits
+        s.append("ns_cleanup() {\n");
+        s.append("  kp=\"\"\n");
+        s.append("  for pd in /proc/[0-9]*; do p=${pd#/proc/}; [ \"$p\" = \"$$\" ] && continue;\n");
+        s.append("    grep -qz '^NS_VNC=1$' \"$pd/environ\" 2>/dev/null && kp=\"$kp $p\"; done\n");
+        s.append("  [ -n \"$kp\" ] && kill -9 $kp 2>/dev/null\n");
+        s.append("}\n");
+        s.append("trap ns_cleanup EXIT\n");
         s.append("mkdir -p \"$HOME/.vnc\" /tmp/.X11-unix\n");
         s.append("chmod 1777 /tmp/.X11-unix 2>/dev/null\n");
         s.append("XV=$(command -v Xtigervnc || command -v Xvnc)\n");
@@ -251,8 +304,11 @@ final class VncManager {
         s.append("done\n");
         s.append("echo '").append(READY_MARKER).append(" on port ").append(port).append("'\n");
         s.append("unset SESSION_MANAGER DBUS_SESSION_BUS_ADDRESS\n");
+        // no accessibility bus, and no gvfs volume monitors (udisks cannot work here and only prints warnings)
+        s.append("export NO_AT_BRIDGE=1 GIO_USE_VOLUME_MONITOR=unix\n");
         s.append("export XDG_RUNTIME_DIR=/tmp/runtime-root\n");
         s.append("mkdir -p \"$XDG_RUNTIME_DIR\"; chmod 700 \"$XDG_RUNTIME_DIR\"\n");
+        s.append(IceWmConfig.script(ctx));
         if (Prefs.vncClipboard(ctx)) s.append("command -v vncconfig >/dev/null 2>&1 && vncconfig -nowin >/dev/null 2>&1 &\n");
         if (Prefs.vncTerminal(ctx)) s.append("command -v xterm >/dev/null 2>&1 && xterm -geometry 100x30+30+30 -fa Monospace -fs 11 >/dev/null 2>&1 &\n");
         s.append("if command -v dbus-launch >/dev/null 2>&1; then dbus-launch --exit-with-session icewm-session & else icewm-session & fi\n");
@@ -263,6 +319,7 @@ final class VncManager {
 
     private static void runBlocking(Context ctx) {
         File rootfs = RootfsManager.dir(ctx);
+        IceWmConfig.ensureBundled(ctx);
         try { KaliSession.prepareGuest(ctx, rootfs); } catch (Exception e) { lastReason = RootfsManager.message(e); return; }
 
         List<String> cmd = ProotLauncher.command(ctx, rootfs, new ArrayList<>(), "/root");

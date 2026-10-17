@@ -1,0 +1,115 @@
+ThemeDescription=                                      "Ice7"
+ThemeAuthor=                                           "Lioh Moeller based on work by bluedxca93 and I-Jurij"
+License=                                               "GPL"
+
+Look=                                                  flat
+Gradients=                                             "menubg.xpm taskbuttonactive.xpm menusel.xpm workspacebuttonactive.xpm taskbuttonbg.xpm taskbuttonminimized.xpm"
+RolloverButtonsSupported=                              1
+MenuMouseTracking=                                     1 
+TaskBarDoubleHeight=                                   0
+TrayDrawBevel=                                         0
+
+TitleButtonsLeft=                                      "s"
+TitleButtonsRight=                                     "xmi"
+TitleButtonsSupported=                                 "xmis"
+TitleBarHeight=                                        23
+TitleBarJustify=                                       0
+
+BorderSizeX=                                           5
+BorderSizeY=                                           5
+CornerSizeX=                                           25
+CornerSizeY=                                           25
+DlgBorderSizeX=                                        5
+DlgBorderSizeY=                                        5
+
+# Active border color
+ColorActiveBorder="rgb:31/aa/ff"
+
+# Normal border color
+ColorNormalBorder="rgb:31/aa/ff"
+
+ColorNormalButton=                                     "rgb:40/40/40"
+ColorNormalButtonText=                                 "rgb:00/00/00"
+ColorActiveButton=                                     "rgb:FF/FF/FF"
+ColorActiveButtonText=                                 "rgb:00/00/00"
+
+ColorNormalTitleBarText=                               "rgb:63/7f/9a"
+ColorNormalTitleBarShadow=                             "rgb:e1/e5/ee"
+ColorActiveTitleBarText=                               "rgb:00/00/00"
+ColorActiveTitleBarShadow=                             "rgb:e1/e5/ee"
+
+ColorActiveBorder=                                     "rgb:FF/FF/FF"
+ColorNormalBorder=                                     "rgb:FF/FF/FF"
+
+
+
+ColorDialog=                                           "rgb:41/62/82"
+#blx
+ColorListBox=                                          "rgb:FF/FF/FF"
+ColorListBoxText=                                      "rgb:FF/FF/FF"
+ColorListBoxSelection=                                 "rgb:c5/e7/f6"
+ColorListBoxSelectionText=                             "rgb:41/62/82"
+ColorScrollBar=                                        "rgb:69/99/A9"
+ColorScrollBarSlider=                                  "rgb:41/62/82"
+ColorScrollBarButton=                                  "rgb:41/62/82"
+ColorScrollBarButtonArrow=                             "rgb:FF/FF/FF"
+ColorLabel=                                            "rgb:41/62/82"
+ColorLabelText=                                        "rgb:FF/FF/FF"
+
+ColorNormalMenu=                                       "rgb:C0/C0/C0"
+ColorActiveMenuItem=                                   "rgb:A0/A0/A0"
+ColorNormalMenuItemText=                               "rgb:00/00/00"
+ColorActiveMenuItemText=                               "rgb:00/00/00"
+ColorDisabledMenuItemText=                             "rgb:80/80/80"
+
+ColorDefaultTaskBar=                                   "rgb:00/00/00"
+ColorNormalTaskBarApp=                                 "rgb:40/40/40"
+ColorNormalTaskBarAppText=                             "rgb:00/00/00"
+ColorInvisibleTaskBarApp=                              "rgb:40/40/40"
+ColorInvisibleTaskBarAppText=                          "rgb:00/00/00"
+ColorActiveTaskBarApp=                                 "rgb:30/30/30"
+ColorActiveTaskBarAppText=                             "rgb:00/00/00"
+ColorMinimizedTaskBarApp=                              "rgb:40/40/40"
+ColorMinimizedTaskBarAppText=                          "rgb:00/00/00"
+ColorNormalWorkspaceButton=                            "rgb:40/40/40"
+ColorActiveWorkspaceButton=                            "rgb:30/30/30"
+
+ColorInput=                                            "rgb:41/62/82"
+ColorInputText=                                        "rgb:FF/FF/FF"
+
+ColorClock=                                            ""
+ColorClockText=                                        "rgb:00/00/00"
+
+ColorCPUStatusUser=                                    "rgb:FF/FF/FF"
+ColorCPUStatusSystem=                                  "rgb:28/48/61"
+ColorCPUStatusNice=                                    "rgb:FF/00/00"
+ColorCPUStatusIdle=                                    "rgb:00/00/00"
+
+ColorNetSend=                                          "rgb:FF/FF/FF"
+ColorNetReceive=                                       "rgb:28/48/61"
+ColorNetIdle=                                          "rgb:00/00/00"
+
+ColorToolTip=                                          "rgb:e8/ec/f6"
+ColorToolTipText=                                      "rgb:00/00/00"
+
+ColorMoveSizeStatus=                                   "rgb:e8/ec/f6"
+ColorMoveSizeStatusText=                               "rgb:00/00/00"
+
+ColorQuickSwitch=                                      "rgb:e8/ec/f6"
+ColorQuickSwitchText=                                  "rgb:00/00/00"
+
+
+#Memory Manager
+ColorMEMStatusFree=                                    "rgb:00/00/00"
+ColorMEMStatusCached=                                  "rgb:90/ee/90"
+ColorMEMStatusUser=                                    "rgb:00/ab/00"
+ColorMEMStatusBuffers=                                 "rgb:ad/d8/e6"
+
+
+TaskBarClockLeds=                                      0
+DesktopBackgroundCenter=                               1
+TaskBarShowNetStatus=                                  0
+TaskBarShowCPUStatus=                                  0
+TimeFormat="%X"
+
+#DesktopBackgroundImage="Ice7.jpg"

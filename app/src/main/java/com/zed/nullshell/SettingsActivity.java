@@ -643,6 +643,55 @@ public class SettingsActivity extends Activity {
         card.addView(displayBtn);
         note("The viewer connects to port 5900 plus the display number. Change it only if that port is already in use.");
 
+        // ---- desktop look
+        section("Desktop look");
+        IceWmConfig.ensureBundled(this);
+        note("Real IceWM themes: Nord, Nitrogen and Ice7 come with the app (install Kali first), and you can download about "
+                + "100 more from the official icewm-extra project. The choice is written into the Kali home folder each time "
+                + "the server starts.");
+        rowLabel("Theme");
+        final TextView themeBtn = Ui.button(this, IceWmConfig.themeLabel(this), Ui.SECONDARY);
+        themeBtn.setOnClickListener(v -> showIceWmThemePicker(themeBtn));
+        card.addView(themeBtn);
+        final TextView themeDl = Ui.button(this, IceWmConfig.downloadedCount(this) > 0
+                ? "Update themes (" + IceWmConfig.downloadedCount(this) + " installed)" : "Download themes", Ui.SECONDARY);
+        themeDl.setOnClickListener(v -> new Dlg(this).setTitle("Download IceWM themes?")
+                .setMessage("Downloads the icewm-extra theme collection from GitHub (GPL-3.0) into the Kali home folder. "
+                        + "It needs an internet connection and some storage.")
+                .setPositiveButton("Download", (d, w) -> downloadIceWmThemes(themeBtn, themeDl))
+                .setNegativeButton("Cancel", null).show());
+        card.addView(themeDl, topMargin(8));
+        TextView themeRm = Ui.button(this, "Remove downloaded themes", Ui.SECONDARY);
+        themeRm.setOnClickListener(v -> new Dlg(this).setTitle("Remove downloaded themes?")
+                .setPositiveButton("Remove", (d, w) -> {
+                    IceWmConfig.removeDownloadedThemes(this);
+                    themeBtn.setText(IceWmConfig.themeLabel(this));
+                    themeDl.setText("Download themes");
+                })
+                .setNegativeButton("Cancel", null).show());
+        card.addView(themeRm, topMargin(8));
+        rowLabel("Interface size");
+        final TextView sizeBtn = Ui.button(this, IceWmConfig.SIZE_NAMES[Prefs.vncUiSize(this)], Ui.SECONDARY);
+        sizeBtn.setOnClickListener(v -> new Dlg(this).setTitle("Interface size")
+                .setSingleChoiceItems(IceWmConfig.SIZE_NAMES, Prefs.vncUiSize(this), (d, which) -> {
+                    sp.edit().putInt(Prefs.VNC_UISIZE, which).apply();
+                    sizeBtn.setText(IceWmConfig.SIZE_NAMES[which]);
+                    d.dismiss();
+                }).show());
+        card.addView(sizeBtn);
+        note("Sets the font, title bar and taskbar size. Use Large or Extra large on a phone.");
+        toggle("Keep my own desktop config", Prefs.VNC_KEEPCFG, false);
+        note("On: once ~/.icewm/preferences exists, the app never overwrites your config. It still writes it the first time.");
+        TextView resetCfg = Ui.button(this, "Reset desktop config", Ui.SECONDARY);
+        resetCfg.setOnClickListener(v -> new Dlg(this).setTitle("Reset desktop config?")
+                .setMessage("Deletes the preferences, theme choice and menu files in Kali. They are written again from the settings the next time the server starts. Downloaded themes are kept.")
+                .setPositiveButton("Reset", (d, w) -> {
+                    IceWmConfig.reset(this);
+                    Toast.makeText(this, "Desktop config reset", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", null).show());
+        card.addView(resetCfg, topMargin(8));
+
         // ---- behaviour
         toggle("Only this phone can connect", Prefs.VNC_LOCAL, true);
         note("On: use a viewer app on this phone (address 127.0.0.1). Off: other devices on your Wi-Fi or hotspot can "
@@ -708,6 +757,80 @@ public class SettingsActivity extends Activity {
         section("Advanced");
         text("Extra server arguments", Prefs.VNC_EXTRA, "-ZlibLevel 1",
                 "Added to the Xtigervnc command line. Leave empty unless you know you need it.");
+    }
+
+    private void showIceWmThemePicker(final TextView button) {
+        IceWmConfig.ensureBundled(this);
+        java.util.List<String> installed = IceWmConfig.installedThemes(this);
+        final java.util.List<String> ids = new java.util.ArrayList<>();
+        final java.util.List<String> names = new java.util.ArrayList<>();
+        ids.add(""); names.add("IceWM default");
+        for (String r : IceWmConfig.RECOMMENDED) if (installed.contains(r)) { ids.add(r); names.add("\u2605 " + r); }
+        for (String t : installed) if (!IceWmConfig.RECOMMENDED.contains(t)) { ids.add(t); names.add(t); }
+        if (ids.size() == 1) {
+            Toast.makeText(this, "No themes found. Install Kali first, or use Download themes.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        String cur = Prefs.vncTheme(this);
+        new Dlg(this).setTitle("Desktop theme")
+                .setSingleChoiceItems(names.toArray(new String[0]), Math.max(0, ids.indexOf(cur)), (d, which) -> {
+                    sp.edit().putString(Prefs.VNC_THEME, ids.get(which)).apply();
+                    button.setText(ids.get(which).isEmpty() ? "IceWM default" : ids.get(which));
+                    d.dismiss();
+                }).show();
+    }
+
+    private void downloadIceWmThemes(final TextView themeBtn, final TextView themeDl) {
+        final boolean[] cancelled = {false};
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(Ui.dp(this, 22), Ui.dp(this, 10), Ui.dp(this, 22), Ui.dp(this, 4));
+        final TextView status = new TextView(this);
+        status.setTextColor(Ui.TEXT);
+        status.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        status.setText("Connecting\u2026");
+        box.addView(status);
+        final ProgressBar bar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+        bar.setIndeterminate(true);
+        bar.setMax(1000);
+        LinearLayout.LayoutParams bp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        bp.topMargin = Ui.dp(this, 12);
+        box.addView(bar, bp);
+        final AlertDialog dlg = new Dlg(this).setTitle("Downloading themes").setView(box).setCancelable(false)
+                .setNegativeButton("Cancel", (d, w) -> cancelled[0] = true).show();
+
+        final android.content.Context app = getApplicationContext();
+        new Thread(() -> {
+            try {
+                final int n = IceWmConfig.downloadThemes(app, new TerminalFonts.Progress() {
+                    @Override public void onProgress(long done, long total) {
+                        main.post(() -> {
+                            if (total > 0) {
+                                bar.setIndeterminate(false);
+                                bar.setProgress((int) Math.min(1000, done * 1000 / total));
+                                status.setText(RootfsManager.formatBytes(done) + " of " + RootfsManager.formatBytes(total));
+                            } else {
+                                status.setText(RootfsManager.formatBytes(done) + " downloaded");
+                            }
+                        });
+                    }
+                    @Override public boolean cancelled() { return cancelled[0]; }
+                });
+                main.post(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    dlg.dismiss();
+                    themeBtn.setText(IceWmConfig.themeLabel(this));
+                    themeDl.setText("Update themes (" + IceWmConfig.downloadedCount(this) + " installed)");
+                    Toast.makeText(this, n + " themes installed. Pick one under Theme.", Toast.LENGTH_LONG).show();
+                });
+            } catch (java.io.IOException e) {
+                main.post(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    dlg.dismiss();
+                    if (!cancelled[0]) Toast.makeText(this, "Theme download failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+            }
+        }, "icewm-themes-download").start();
     }
 
     private void showVncPresets() {

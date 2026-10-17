@@ -338,6 +338,10 @@ public final class KaliSession {
                 "Dir::Bin::dpkg \"/usr/local/bin/ns-dpkg\";\n" +
                 "APT::Sandbox::User \"root\";\n", false);
 
+        // bubblewrap cannot work under PRoot (no user namespaces, no seccomp), and gdk-pixbuf's glycin image loaders
+        // insist on it: GTK apps such as Thunar and PCManFM then abort on their first icon. /usr/local/bin comes before
+        // /usr/bin in PATH, so this shim runs the loader directly. The real /usr/bin/bwrap is left alone.
+        writeIfChanged(new File(bin, "bwrap"), NS_BWRAP, true);
         writeIfChanged(new File(bin, "ns-session"), NS_SESSION, true);
         writeIfChanged(new File(bin, "ns-shell"), NS_SHELL, true);
         writeIfChanged(new File(bin, "ns-winwatch"), NS_WINWATCH, true);
@@ -428,6 +432,20 @@ public final class KaliSession {
             "systemd-resolved\n" +
             "systemd-timesyncd\n" +
             "udev\n";
+
+    /**
+     * Stand-in for bwrap: skips every sandbox option and runs the command that follows "--seccomp N" (for glycin that is
+     * the loader itself; open file descriptors such as --dbus-fd survive exec). Anything without --seccomp fails as
+     * before, so programs that genuinely need a sandbox (flatpak ...) are unaffected by the shim's presence.
+     */
+    private static final String NS_BWRAP =
+            "#!/bin/bash\n" +
+            "# NS-WRAPPER: bubblewrap does not work under PRoot; see KaliSession.prepareGuest.\n" +
+            "while [ $# -gt 0 ]; do\n" +
+            "  if [ \"$1\" = \"--seccomp\" ]; then shift 2; exec \"$@\"; fi\n" +
+            "  shift\n" +
+            "done\n" +
+            "exit 1\n";
 
     private static final String NS_DPKG =
             "#!/bin/bash\n" +

@@ -246,6 +246,7 @@ public class VncActivity extends Activity {
     private void refresh() {
         boolean kali = RootfsManager.isInstalled(this);
         boolean installed = VncManager.isInstalled(this);
+        String extras = kali && installed ? VncManager.extrasMissing(this) : "";
         boolean running = VncManager.isRunning();
         boolean ready = VncManager.isReady();
         boolean busy = VncManager.isBusy();
@@ -277,11 +278,14 @@ public class VncActivity extends Activity {
             statusDetail.setOnClickListener(v -> showLog());
         } else {
             statusTitle.setText("Stopped");
-            statusDetail.setText("Ready. Tap Start, then connect with a VNC viewer app.");
+            statusDetail.setText("Ready. Tap Start, then connect with a VNC viewer app."
+                    + (extras.isEmpty() ? "" : "\n\nFile managers (Thunar, PCManFM) also need: " + extras
+                    + ". Tap Install extras to add them."));
         }
         show(statusDetail, statusDetail.getText().length() > 0);
 
-        show(installBtn, kali && !installed && !busy);
+        installBtn.setText(installed ? "Install extras" : "Install");
+        show(installBtn, kali && (!installed || !extras.isEmpty()) && !busy && !running);
         show(startBtn, installed && !busy);
         show(stopBtn, running);
         show(restartBtn, ready);
