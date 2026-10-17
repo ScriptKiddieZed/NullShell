@@ -680,6 +680,36 @@ public class SettingsActivity extends Activity {
                 }).show());
         card.addView(sizeBtn);
         note("Sets the font, title bar and taskbar size. Use Large or Extra large on a phone.");
+        rowLabel("Wallpaper");
+        final TextView wallBtn = Ui.button(this, IceWmConfig.WALLPAPER_NAMES[Prefs.vncWallpaper(this)], Ui.SECONDARY);
+        wallBtn.setOnClickListener(v -> new Dlg(this).setTitle("Theme wallpaper")
+                .setSingleChoiceItems(IceWmConfig.WALLPAPER_NAMES, Prefs.vncWallpaper(this), (d, which) -> {
+                    sp.edit().putInt(Prefs.VNC_WALL, which).apply();
+                    wallBtn.setText(IceWmConfig.WALLPAPER_NAMES[which]);
+                    d.dismiss();
+                }).show());
+        card.addView(wallBtn, topMargin(8));
+        final TextView ownWall = Ui.button(this, wallpaperLabel(), Ui.SECONDARY);
+        ownWall.setOnClickListener(v -> FilePick.request(this, false, "/root", path -> {
+            String low = path.toLowerCase(Locale.ROOT);
+            if (!IceWmConfig.safeGuestPath(path)) { toast("That file name has characters that cannot be used."); return; }
+            if (!(low.endsWith(".png") || low.endsWith(".jpg") || low.endsWith(".jpeg") || low.endsWith(".xpm")
+                    || low.endsWith(".bmp") || low.endsWith(".gif"))) { toast("Pick a PNG or JPEG image."); return; }
+            sp.edit().putString(Prefs.VNC_WALLPATH, path).apply();
+            ownWall.setText(wallpaperLabel());
+            toast("Wallpaper set. It shows the next time the desktop starts.");
+        }));
+        card.addView(ownWall, topMargin(8));
+        TextView ownWallOff = Ui.button(this, "Use the theme's wallpaper", Ui.SECONDARY);
+        ownWallOff.setOnClickListener(v -> {
+            sp.edit().remove(Prefs.VNC_WALLPATH).apply();
+            ownWall.setText(wallpaperLabel());
+        });
+        card.addView(ownWallOff, topMargin(8));
+        note("Your own image: pick a PNG or JPEG from Kali's files (copy a photo in with the file manager first). "
+                + "The setting above decides how it fits. Applies at the next desktop start.");
+        note("Many themes include a wallpaper made for one screen size. Stretch fills your desktop; the others keep its "
+                + "shape (centre, tile) or hide it."); 
         toggle("Keep my own desktop config", Prefs.VNC_KEEPCFG, false);
         note("On: once ~/.icewm/preferences exists, the app never overwrites your config. It still writes it the first time.");
         TextView resetCfg = Ui.button(this, "Reset desktop config", Ui.SECONDARY);
@@ -924,8 +954,15 @@ public class SettingsActivity extends Activity {
         startActivityForResult(i, REQ_EXPORT);
     }
 
+    private String wallpaperLabel() {
+        String w = Prefs.vncWallpaperPath(this);
+        if (w.isEmpty()) return "Choose your own wallpaper…";
+        return "Wallpaper: " + w.substring(w.lastIndexOf('/') + 1);
+    }
+
     @Override protected void onActivityResult(int req, int res, Intent data) {
         super.onActivityResult(req, res, data);
+        if (FilePick.handle(req, res, data)) return;
         if (res != RESULT_OK || data == null || data.getData() == null) return;
         final Uri uri = data.getData();
         if (req == REQ_IMPORT) {

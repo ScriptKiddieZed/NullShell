@@ -33,6 +33,8 @@ public final class Prefs {
     public static final String VNC_EXTRA = "vnc_extra";
     public static final String VNC_THEME = "vnc_theme";
     public static final String VNC_UISIZE = "vnc_uisize";
+    public static final String VNC_WALL = "vnc_wall";
+    public static final String VNC_WALLPATH = "vnc_wallpath";
     public static final String VNC_KEEPCFG = "vnc_keepcfg";
     /** Colour depths the VNC server can be started with; VNC_DEPTH is an index into this. */
     public static final int[] VNC_DEPTHS = {16, 24};
@@ -143,6 +145,10 @@ public final class Prefs {
     /** IceWM theme folder name (a downloaded or bundled theme); empty for IceWM's own default. Nord by default. */
     public static String vncTheme(Context c) { return sp(c).getString(VNC_THEME, "Nord"); }
     /** 0 normal, 1 large, 2 extra large: fonts, title bars and taskbar. */
+    /** Theme wallpaper: 0 stretch to the screen, 1 centre, 2 tile, 3 none (solid colour). */
+    public static int vncWallpaper(Context c) { return clamp(sp(c).getInt(VNC_WALL, 0), 0, 3); }
+    /** Guest path of the user's own wallpaper image; empty for the theme's. */
+    public static String vncWallpaperPath(Context c) { return sp(c).getString(VNC_WALLPATH, ""); }
     public static int vncUiSize(Context c) { return clamp(sp(c).getInt(VNC_UISIZE, 1), 0, 2); }
     /** When on, the app writes ~/.icewm only if it does not exist yet. */
     public static boolean vncKeepConfig(Context c) { return sp(c).getBoolean(VNC_KEEPCFG, false); }

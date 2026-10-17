@@ -30,6 +30,7 @@ final class IceWmConfig {
     private IceWmConfig() { }
 
     static final String[] SIZE_NAMES = {"Normal", "Large", "Extra large"};
+    static final String[] WALLPAPER_NAMES = {"Stretch to fill the screen", "Centre", "Tile", "None (solid colour)"};
     private static final int[] FONT_PT = {11, 13, 16};
 
     /** Themes from the collection that suit a phone screen, shown first in the picker (when installed). */
@@ -216,6 +217,11 @@ final class IceWmConfig {
         int pt = FONT_PT[size];
         StringBuilder p = new StringBuilder();
         p.append("# Written by NullShell. \"Keep my own desktop config\" in Settings stops this.\n");
+        // Theme wallpapers are drawn for one screen size and IceWM tiles them by default, so on a phone-sized desktop
+        // they show up repeated and cut off. Stretching fills the screen exactly.
+        int wall = Prefs.vncWallpaper(c);
+        p.append("DesktopBackgroundScaled=").append(wall == 0 ? 1 : 0).append('\n');
+        p.append("DesktopBackgroundCenter=").append(wall == 1 ? 1 : 0).append('\n');
         // larger interface: bigger title bars, borders and taskbar icons than the theme's (themes are drawn for desktops)
         if (size > 0) {
             p.append("TitleBarHeight=").append(size == 1 ? 30 : 38).append('\n');
@@ -233,6 +239,12 @@ final class IceWmConfig {
         for (String k : new String[]{"TitleFontNameXft", "ActiveTaskBarFontNameXft", "ActiveButtonFontNameXft"})
             p.append(k).append('=').append(bold).append('\n');
         return p.toString();
+    }
+
+    /** A wallpaper path is written inside double quotes in an IceWM file, so it may not hold quotes, backslashes or newlines. */
+    static boolean safeGuestPath(String p) {
+        return p != null && p.startsWith("/") && p.length() < 512 && p.indexOf('"') < 0 && p.indexOf('\\') < 0
+                && p.indexOf('\n') < 0 && p.indexOf('\r') < 0;
     }
 
     /** Shell snippet for the VNC start script. Quoted heredocs, so nothing in the text is expanded by the shell. */
@@ -257,9 +269,15 @@ final class IceWmConfig {
         s.append("fi\n");
 
         s.append("cat > \"$HOME/.icewm/prefoverride\" <<'NS_OVERRIDE_EOF'\n").append(override(c)).append("NS_OVERRIDE_EOF\n");
-        // a solid background, unless the chosen theme brings its own wallpaper
+        // the user's own wallpaper wins over the theme's; otherwise a solid background unless the theme brings one
+        String wp = Prefs.vncWallpaperPath(c);
+        if (!safeGuestPath(wp)) wp = "";
+        s.append("NS_WP=").append(ProotLauncher.quote(wp)).append("\n");
         s.append("NS_TF=\"$HOME/.icewm/themes/$NS_THEME/default.theme\"; [ -f \"$NS_TF\" ] || NS_TF=\"/usr/share/icewm/themes/$NS_THEME/default.theme\"\n");
-        s.append("if [ -z \"$NS_THEME\" ] || ! grep -qE '^[[:space:]]*DesktopBackgroundImage[[:space:]]*=[[:space:]]*\"[^\"]+\"' \"$NS_TF\" 2>/dev/null; then\n");
+        s.append("if [ -n \"$NS_WP\" ] && [ -f \"$NS_WP\" ] && ").append(Prefs.vncWallpaper(c) == 3 ? "false" : "true").append("; then\n");
+        s.append("  printf 'DesktopBackgroundImage=\"%s\"\\n' \"$NS_WP\" >> \"$HOME/.icewm/prefoverride\"\n");
+        s.append("elif [ -z \"$NS_THEME\" ] || ").append(Prefs.vncWallpaper(c) == 3 ? "true" : "false")
+                .append(" || ! grep -qE '^[[:space:]]*DesktopBackgroundImage[[:space:]]*=[[:space:]]*\"[^\"]+\"' \"$NS_TF\" 2>/dev/null; then\n");
         s.append("  printf 'DesktopBackgroundImage=\"\"\\nDesktopBackgroundColor=\"rgb:20/24/2C\"\\n' >> \"$HOME/.icewm/prefoverride\"\n");
         s.append("fi\n");
 
