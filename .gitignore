@@ -18,9 +18,6 @@ captures/
 # CodeAssist
 .ca/
 
-# Native PRoot runtime (prebuilt Termux binaries, generated on-device, not redistributed)
-app/src/main/jniLibs/
-
 # Keystores - never commit signing keys
 *.jks
 *.keystore

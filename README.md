@@ -1,10 +1,38 @@
+<div align="center">
+
 # NullShell
 
-A rootless Kali Linux environment and development workspace for Android (ARM64) — terminal, code editor, in-app browser, file manager and an AI assistant, all in one APK, no root required.
+**Kali Linux, a code editor, a dev-tools browser and an AI assistant — in one APK. No root.**
+
+[![Build](https://github.com/ScriptKiddieZed/NullShell/actions/workflows/build.yml/badge.svg)](https://github.com/ScriptKiddieZed/NullShell/actions/workflows/build.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Android 8.0+](https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white)
+![ARM64](https://img.shields.io/badge/arch-arm64--v8a-orange)
+[![Latest release](https://img.shields.io/github/v/release/ScriptKiddieZed/NullShell?include_prereleases)](https://github.com/ScriptKiddieZed/NullShell/releases)
+
+[Download](https://github.com/ScriptKiddieZed/NullShell/releases) · [Features](#features) · [Build](#building-from-source) · [Contribute](#contributing)
 
 ![banner](https://github.com/ScriptKiddieZed/NullShell/blob/124f7b95837b9612afc9f379acb893f020b4fd5e/banner.png)
 
-NullShell runs a full Kali Linux userspace through [PRoot](https://proot-me.github.io/), directly from the app. Kali Linux is a trademark of OffSec; NullShell is not affiliated with or endorsed by it.
+</div>
+
+NullShell runs a full Kali Linux userspace through [PRoot](https://proot-me.github.io/), directly from the app — terminal, code editor, in-app browser, file manager and an AI assistant, all in one APK, no root required. Kali Linux is a trademark of OffSec; NullShell is not affiliated with or endorsed by it.
+
+## Why NullShell?
+
+- **Everything in one app.** Terminal, editor with language servers, a browser with DevTools-style panels, a file manager and an AI chat, instead of juggling several apps.
+- **Made for security work on a phone.** Point the built-in browser at your own mitmproxy, Caido or Burp using an app-private CA certificate, without touching the system trust store.
+- **Real Kali userspace.** `apt install` the tools you already know, and run a full IceWM desktop over VNC.
+- **Works out of the box.** The PRoot runtime is bundled, so there is no manual setup step.
+- **Open source (MIT).** Third-party components keep their own licenses, listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+## Quick start
+
+1. Download the latest APK from [Releases](https://github.com/ScriptKiddieZed/NullShell/releases) and install it (allow installs from your browser or file manager if Android asks).
+2. Open NullShell and let it set up the Kali userspace on first launch.
+3. Run `apt update && apt install <your tools>` in the terminal.
+
+Requirements: an ARM64 device running Android 8.0 (API 26) or newer.
 
 ## Features
 
@@ -113,9 +141,9 @@ cd NullShell
 
 The debug APK is written to `app/build/outputs/apk/debug/`. A GitHub Actions workflow (`.github/workflows/build.yml`) builds the same target on every push and pull request against `main`, and uploads the APK as a build artifact.
 
-### Native PRoot runtime (required to run Kali, not needed just to build)
+### Native PRoot runtime (bundled)
 
-The APK needs these prebuilt ARM64 native libraries under `app/src/main/jniLibs/arm64-v8a/` before it can actually start a Kali session:
+The prebuilt ARM64 native libraries needed to start a Kali session are included in this repository under `app/src/main/jniLibs/arm64-v8a/`:
 
 ```text
 app/src/main/jniLibs/arm64-v8a/
@@ -126,7 +154,13 @@ app/src/main/jniLibs/arm64-v8a/
     libandroid-shmem.so
 ```
 
-These are PRoot, talloc and libandroid-shmem binaries built for Termux, and are **not redistributed in this repository** (they're GPL-2.0+/LGPL-3.0/BSD-licensed prebuilt artifacts, not NullShell's own code). Generate them yourself, on an Android device, using Termux:
+These are PRoot, talloc and libandroid-shmem binaries taken unmodified from the [Termux](https://github.com/termux/termux-packages) packages. They are **third-party software under their own licenses** (PRoot: GPL-2.0+, talloc: LGPL-3.0+, libandroid-shmem: BSD-3-Clause), not NullShell's own MIT-licensed code. Versions, source links and license texts are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the [`licenses/`](licenses/) directory.
+
+Because they are bundled, a plain `./gradlew assembleDebug` produces an APK that can start Kali sessions out of the box.
+
+#### Updating the libraries (optional)
+
+To refresh them from a newer Termux build, run this on an Android device in Termux:
 
 ```bash
 pkg update
@@ -134,12 +168,14 @@ pkg install proot libtalloc libandroid-shmem
 bash scripts/prepare-proot-from-termux.sh
 ```
 
-`scripts/prepare-proot-from-termux.sh` copies the Termux binaries into `jniLibs/arm64-v8a` and patches PRoot's `DT_NEEDED` entry from `libtalloc.so.2` to `libtalloc.so`, since Android extracts packaged native libraries under a flat `nativeLibraryDir`. Run `scripts/verify-native-runtime.sh` afterwards to confirm all required files are present.
+`scripts/prepare-proot-from-termux.sh` copies the Termux binaries into `jniLibs/arm64-v8a` and patches PRoot's `DT_NEEDED` entry from `libtalloc.so.2` to `libtalloc.so`, since Android extracts packaged native libraries under a flat `nativeLibraryDir`. Run `scripts/verify-native-runtime.sh` afterwards to confirm all required files are present. If you update the binaries, also update the versions in `THIRD_PARTY_NOTICES.md`.
 
-Without this step, the app still compiles and installs, but terminal sessions can't start — this is exactly what the CI build in this repository produces (a verified, compiling build, without the native runtime bundled).
+## Contributing
+
+Issues, ideas and pull requests are welcome. If you hit a bug, open an issue with your device model, Android version and what you were doing. For code changes, build with `./gradlew assembleDebug` first and keep pull requests focused. If NullShell is useful to you, a star helps other people find it.
 
 ## License
 
 NullShell's own source code is released under the [MIT License](LICENSE).
 
-NullShell bundles and depends on third-party software under their own licenses — sora-editor (LGPL-2.1), Eclipse LSP4J (EPL-2.0), Apache Commons Compress/XZ, bundled TextMate grammars, JetBrains Mono, and the PRoot/talloc/libandroid-shmem native runtime (GPL-2.0+/LGPL-3.0/BSD, not redistributed). See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the full list.
+NullShell bundles and depends on third-party software under their own licenses — sora-editor (LGPL-2.1), Eclipse LSP4J (EPL-2.0), Apache Commons Compress/XZ, bundled TextMate grammars, JetBrains Mono, and the PRoot/talloc/libandroid-shmem native runtime (GPL-2.0+/LGPL-3.0+/BSD-3-Clause, redistributed unmodified from Termux builds). See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the full list, source links and license texts.
