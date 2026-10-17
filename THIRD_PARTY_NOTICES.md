@@ -40,7 +40,7 @@ from distribution of the binaries.
 version, replace the file in `app/src/main/jniLibs/arm64-v8a/` and rebuild with `./gradlew assembleDebug`.
 
 License texts are in [`licenses/`](licenses/): `GPL-2.0.txt` (PRoot), `LGPL-3.0.txt` and `GPL-3.0.txt` (talloc),
-and the BSD-3-Clause text with copyright line for libandroid-shmem.
+and `BSD-3-Clause-libandroid-shmem.txt` (libandroid-shmem).
 
 ## IceWM themes (downloaded on request)
 

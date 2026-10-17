@@ -125,7 +125,7 @@ Requirements: an ARM64 device running Android 8.0 (API 26) or newer.
 
 NullShell is a standard Android Gradle project (Java, no Kotlin in the app module) and is primarily developed on-device with [CodeAssist](https://github.com/tyron12233/CodeAssist), but builds the same way with Android Studio or plain Gradle.
 
-Requirements: JDK 17, Android SDK (compileSdk 35), and a device or emulator running Android 8.0 (API 26) or newer.
+Requirements: JDK 17, Android SDK (compileSdk 36), and a device or emulator running Android 8.0 (API 26) or newer.
 
 ```bash
 git clone https://github.com/<your-username>/NullShell.git

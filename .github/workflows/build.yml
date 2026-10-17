@@ -32,12 +32,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Assemble debug APK
-        # NOTE: app/src/main/jniLibs is intentionally not part of this repository.
-        # The Kali/PRoot native runtime is a set of prebuilt Termux binaries that
-        # must be generated on-device with scripts/prepare-proot-from-termux.sh
-        # (see README.md). This workflow therefore verifies that the app compiles
-        # and packages correctly; the resulting APK has no bundled native runtime
-        # and will not be able to start a Kali session until those files are added.
+        # The prebuilt PRoot runtime is committed in app/src/main/jniLibs, so this APK can start Kali sessions.
         run: ./gradlew assembleDebug --stacktrace
 
       - name: Upload APK artifact
